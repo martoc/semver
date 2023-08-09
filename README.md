@@ -1,3 +1,3 @@
-# semver
+# semver
 
 [Documentation](./docs/index.md)
