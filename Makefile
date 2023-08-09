@@ -37,5 +37,6 @@ check: ## Run checks
 
 .PHONY: build
 build: check lint ## Build the binary
+	@echo "==> Building..."
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
