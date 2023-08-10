@@ -14,15 +14,14 @@ generate: ## Run source code generation
 	go generate $(PACKAGES)
 
 .PHONY: init
-init: dev-deps ## Installing binaries
+init: install ## Installing binaries
 	@echo "==> Initialising..."
-	@mkdir -p $(TARGET)
 	git submodule update --init --recursive
 
-.PHONY: dev-deps
-dev-deps: ## Install development dependencies
+.PHONY: install
+install: ## Install development dependencies
 	@echo "==> Installing dependencies..."
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.51.2
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.0
 	go install github.com/golang/mock/mockgen@v1.6.0
 
 .PHONY: lint
@@ -39,6 +38,7 @@ check: ## Run checks
 .PHONY: build
 build: check lint ## Build the binary
 	@echo "==> Building..."
+	@mkdir -p $(TARGET)
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
 
