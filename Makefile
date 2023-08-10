@@ -17,6 +17,7 @@ generate: ## Run source code generation
 init: dev-deps ## Installing binaries
 	@echo "==> Initialising..."
 	@mkdir -p $(TARGET)
+	git submodule update --init --recursive
 
 .PHONY: dev-deps
 dev-deps: ## Install development dependencies
@@ -40,3 +41,8 @@ build: check lint ## Build the binary
 	@echo "==> Building..."
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
+
+.PHONY: run-integration-tests
+run-integration-tests: ## Run integration tests
+	@echo "==> Running integration tests..."
+	./integration-tests/bats/bin/bats integration-tests/placeholder.bats
