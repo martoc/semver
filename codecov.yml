@@ -1,24 +1,22 @@
 comment:
-  layout: "flags, files"
+  layout: "diff, flags, files"
   behavior: default
-  require_changes: true   # only comment on changes in coverage
-  require_base: yes       # [yes :: must have a base report to post]
-  require_head: yes       # [yes :: must have a head report to post]
-  branches:               # branch names that can post comment
+  require_changes: false
+  require_base: false
+  require_head: false
+  branches:
     - "main"
 
 coverage:
   status:
     project:
       default:
-        informational: true
         target: auto
-        threshold: "0.5%"
+        threshold: "80%"
     patch:
       default:
-        informational: true
         target: auto
-        threshold: "0.5%"
+        threshold: "80%"
 
 github_checks:
     annotations: false
