@@ -16,6 +16,7 @@ generate: ## Run source code generation
 .PHONY: init
 init: install ## Installing binaries
 	@echo "==> Initialising..."
+	go version
 	git submodule update --init --recursive
 
 .PHONY: install

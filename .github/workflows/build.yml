@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.5.3
       - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.0'
+      - name: Init build
         run: make init
       - name: Build
         run: make build
