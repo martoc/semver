@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
+	"github.com/martoc/semver/cmd"
 )
 
 func main() {
-	log.Println("Hello, World!")
+	cmd.Execute()
 }
