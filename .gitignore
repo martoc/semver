@@ -25,3 +25,4 @@ go.work
 
 # Target directory
 target/
+__debug*
