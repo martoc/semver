@@ -1,4 +1,4 @@
-# Introduction
+# Introduction
 
 Semantic Versioning (SemVer) and Conventional Commits are two practices commonly used in software development to manage versioning and communicate changes in a standardized manner. When combined, they provide a robust framework for version control and release management. Let's delve into each of these concepts and explore how a tool utilizing both can help tag repositories effectively.
 
