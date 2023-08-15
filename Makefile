@@ -5,6 +5,11 @@ GOPATH := $(shell go env GOPATH)
 .PHONY: all
 all: init build run-integration-tests ## Run all targets
 
+.PHONY: docs
+docs: ## Run docs
+	@echo "==> Running docs..."
+	godoc -http=:6060
+
 .PHONY: tidy
 tidy: ## Run tidy files
 	@echo "==> Running tidy..."
