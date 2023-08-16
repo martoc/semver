@@ -1,4 +1,4 @@
-// Package core provide some functions
+// Package core provide some functions.
 package core
 
 import "log"
@@ -12,7 +12,7 @@ type Class struct {
 	PlaceHolder PlaceHolder
 }
 
-// Get result
+// Get result.
 func (c *Class) Get() {
 	c.PlaceHolder.Get()
 	log.Println("Hello, World!")
