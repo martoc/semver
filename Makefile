@@ -59,3 +59,4 @@ build: check lint ## Build the binary
 run-integration-tests: ## Run integration tests
 	@echo "==> Running integration tests..."
 	./integration-tests/bats/bin/bats integration-tests/version.bats
+	./integration-tests/bats/bin/bats integration-tests/calculate.bats
