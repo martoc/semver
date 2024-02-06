@@ -2,11 +2,7 @@ BIN_NAME := $(shell basename `pwd`)
 PACKAGES = ./...
 TARGET := ./target
 GOPATH := $(shell go env GOPATH)
-GOOS := $(shell go env GOOS)
-GOARCH := $(shell go env GOARCH)
-
 BIN_VERSION := $(shell echo $$VERSION)
-
 ifeq ($(strip $(BIN_VERSION)),)
 BIN_VERSION := 0.0.0
 endif
@@ -33,7 +29,7 @@ build: check lint ## Build the binary
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
 	go build -ldflags " \
 				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION)" \
-			-o $(TARGET)/$(GOOS)-$(GOARCH)/$(BIN_VERSION)/$(BIN_NAME) main.go
+			-o $(TARGET)/$(BIN_NAME) main.go
 
 .PHONY: run-integration-tests
 run-integration-tests: ## Run integration tests

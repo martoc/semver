@@ -22,9 +22,9 @@ jobs:
       - name: Init build
         run: |
           export VERSION=1.0.0
-          export GOOS=(go env GOOS)
-          export GOARCH=(go env GOARCH)
           export BIN_NAME=$(basename `pwd`)
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BIN_NAME=$BIN_NAME" >> "$GITHUB_ENV"
           make init
       - name: Build
         run: make build
@@ -38,6 +38,6 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - uses: actions/upload-artifact@v4.3.1
         with:
-          name: semver
-          path: target/$GOOS-$GOARCH/$VERSION/$BIN_NAME
+          name: ${{ env.BIN_NAME }}-${{ env.VERSION}}-${{ runner.os }}-${{ runner.arch }}
+          path: target/${{ env.BIN_NAME }}
           overwrite: true
