@@ -79,4 +79,4 @@ publish: ## Publish the binary
 	curl -X PUT \
 		-H "Authorization: token $(GITHUB_TOKEN)" \
 		--data-binary "@$(TARGET)/$(BIN_NAME)" \
-		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION).tar.gz"
+		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)"
