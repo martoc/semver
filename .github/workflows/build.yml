@@ -11,15 +11,12 @@ on:
     - release/**
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-22.04, windows-2022, macos-11]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.5.3
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v4.1.0
         with:
           go-version: '1.21.0'
       - name: Init build
@@ -29,8 +26,13 @@ jobs:
       - name: Run Integration Tests
         run: make run-integration-tests
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v3.1.6
         with:
           file: target/coverage.out
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/upload-artifact@v4.3.1
+        with:
+          name: target/semver
+          path: linux-amd64/1.0.0/semver
+          overwrite: true
