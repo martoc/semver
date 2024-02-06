@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"time"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ var calculateCmd = &cobra.Command{
 	Long: `Calculates a new semantic version based on the latest commit message in the repository
 		using semantic versioning and conventional commits`,
 	Run: func(cmd *cobra.Command, args []string) {
-		epoc := time.Now().Unix()
-		fmt.Println(epoc) //nolint:forbidigo
+		githubSHA := os.Getenv("GITHUB_SHA")
+		fmt.Println(githubSHA[:7]) //nolint:forbidigo
 	},
 }

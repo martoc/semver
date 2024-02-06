@@ -7,5 +7,5 @@ load 'common.sh'
 @test "Calculate new semver" {
   run $BINARY_PATH calculate
   assert_success
-  assert_not_equal $output ""
+  assert_equal $output "b65a156"
 }

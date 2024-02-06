@@ -1,3 +1,5 @@
+# Description: Makefile for Go projects
+
 BIN_NAME := $(shell basename `pwd`)
 PACKAGES = ./...
 TARGET := ./target
