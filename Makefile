@@ -1,9 +1,44 @@
+BIN_NAME := $(shell basename `pwd`)
 PACKAGES = ./...
 TARGET := ./target
 GOPATH := $(shell go env GOPATH)
+GOOS := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
+
+BIN_VERSION := $(shell echo $$VERSION)
+
+ifeq ($(strip $(BIN_VERSION)),)
+BIN_VERSION := 0.0.0
+endif
 
 .PHONY: all
-all: init build run-integration-tests ## Run all targets
+all: clean init build run-integration-tests ## Run all targets
+
+.PHONY: clean
+clean: ## Clean the binary
+	@echo "==> Cleaning..."
+	rm -rf $(TARGET)
+
+.PHONY: init
+init: install ## Installing binaries
+	@echo "==> Initialising..."
+	go version
+	git submodule update --init --recursive
+
+.PHONY: build
+build: check lint ## Build the binary
+	@echo "==> Building..."
+	@mkdir -p $(TARGET)
+	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
+	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
+	go build -ldflags " \
+				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(VERSION)" \
+			-o $(TARGET)/$(GOOS)-$(GOARCH)/$(BIN_VERSION)/$(BIN_NAME) main.go
+
+.PHONY: run-integration-tests
+run-integration-tests: ## Run integration tests
+	@echo "==> Running integration tests..."
+	./integration-tests/run.sh
 
 .PHONY: docs
 docs: ## Run docs
@@ -21,12 +56,6 @@ tidy: ## Run tidy files
 generate: ## Run source code generation
 	@echo "==> Generating source files..."
 	go generate $(PACKAGES)
-
-.PHONY: init
-init: install ## Installing binaries
-	@echo "==> Initialising..."
-	go version
-	git submodule update --init --recursive
 
 .PHONY: install
 install: ## Install development dependencies
@@ -47,16 +76,4 @@ check: ## Run checks
 	go mod verify
 	go vet -all $(PACKAGES)
 
-.PHONY: build
-build: check lint ## Build the binary
-	@echo "==> Building..."
-	@mkdir -p $(TARGET)
-	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
-	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
-	go build -o $(TARGET)/semver main.go
 
-.PHONY: run-integration-tests
-run-integration-tests: ## Run integration tests
-	@echo "==> Running integration tests..."
-	./integration-tests/bats/bin/bats integration-tests/version.bats
-	./integration-tests/bats/bin/bats integration-tests/calculate.bats

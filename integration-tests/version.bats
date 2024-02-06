@@ -2,9 +2,10 @@
 
 load 'test_helper/bats-support/load'
 load 'test_helper/bats-assert/load'
+load 'common.sh'
 
 @test "Get CLI Version" {
-  run ./target/semver version
+  run $BINARY_PATH version
   assert_success
-  assert_not_equal $output ""
+  assert_equal $output $VERSION
 }

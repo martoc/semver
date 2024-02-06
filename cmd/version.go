@@ -6,11 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var CLIVersion string
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number",
 	Long:  `All software has versions`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("0.0.0") //nolint:forbidigo
+		fmt.Println(CLIVersion) //nolint:forbidigo
 	},
 }

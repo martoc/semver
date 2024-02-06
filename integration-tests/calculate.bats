@@ -2,9 +2,10 @@
 
 load 'test_helper/bats-support/load'
 load 'test_helper/bats-assert/load'
+load 'common.sh'
 
 @test "Calculate new semver" {
-  run ./target/semver calculate
+  run $BINARY_PATH calculate
   assert_success
   assert_not_equal $output ""
 }
