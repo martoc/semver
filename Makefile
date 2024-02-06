@@ -83,6 +83,5 @@ publish: ## Publish the binary
 		--data-binary "@$(TARGET)/$(BIN_NAME)" \
 		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)" || exit 1
 	curl -X GET \
-		-H "Authorization: token $(GITHUB_TOKEN)" \ 
-		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)" || exit 1
+		-H "Authorization: token $(GITHUB_TOKEN)" "https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)" 
 	ls -l
