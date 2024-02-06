@@ -8,6 +8,7 @@ BIN_VERSION := $(shell echo $$VERSION)
 ifeq ($(strip $(BIN_VERSION)),)
 BIN_VERSION := 0.0.0
 endif
+GITHUB_TOKEN := $(shell echo $$GITHUB_TOKEN)
 
 .PHONY: all
 all: clean init build run-integration-tests ## Run all targets
