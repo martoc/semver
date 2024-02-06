@@ -37,4 +37,4 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Publish Binary
-        run: make publish GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        run: make publish GITHUB_TOKEN=${{ github.token }}
