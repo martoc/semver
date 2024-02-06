@@ -21,7 +21,7 @@ jobs:
           go-version: '1.21.0'
       - name: Init build
         run: |
-          export VERSION=1.0.0
+          export VERSION=${GITHUB_SHA:0:7}
           export BIN_NAME=$(basename `pwd`)
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "BIN_NAME=$BIN_NAME" >> "$GITHUB_ENV"
@@ -36,3 +36,5 @@ jobs:
           file: target/coverage.out
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Publish Binary
+        run: make publish

@@ -28,7 +28,8 @@ build: check lint ## Build the binary
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
 	go build -ldflags " \
-				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION)" \
+				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION) \
+				" \
 			-o $(TARGET)/$(BIN_NAME) main.go
 
 .PHONY: run-integration-tests
@@ -72,4 +73,10 @@ check: ## Run checks
 	go mod verify
 	go vet -all $(PACKAGES)
 
-
+.PHONY: publish
+publish: ## Publish the binary
+	@echo "==> Publishing..."
+	curl -X PUT \
+		-H "Authorization: token $(GITHUB_TOKEN)" \
+		--data-binary "@$(TARGET)/$(BIN_NAME)" \
+		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/bin/$(BIN_NAME)-$(BIN_VERSION).tar.gz"
