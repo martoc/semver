@@ -32,7 +32,7 @@ build: check lint ## Build the binary
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
 	go build -ldflags " \
-				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(VERSION)" \
+				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION)" \
 			-o $(TARGET)/$(GOOS)-$(GOARCH)/$(BIN_VERSION)/$(BIN_NAME) main.go
 
 .PHONY: run-integration-tests
