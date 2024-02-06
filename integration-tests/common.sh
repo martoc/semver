@@ -3,3 +3,6 @@ if [ -z "$VERSION" ]; then
 fi
 
 BINARY_PATH="./target/$(go env GOOS)-$(go env GOARCH)/$VERSION/semver"
+
+echo "VERSION=$VERSION"
+echo "BINARY_PATH=$BINARY_PATH"
