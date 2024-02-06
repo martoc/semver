@@ -7,5 +7,5 @@ load 'common.sh'
 @test "Calculate new semver" {
   run $BINARY_PATH calculate
   assert_success
-  assert_not_equal $output ""
+  assert_equal $output "${GITHUB_SHA:0:7}"
 }
