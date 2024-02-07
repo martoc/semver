@@ -23,6 +23,17 @@ jobs:
           go-version: '1.21.0'
       - name: Init build
         run: |
+          GITHUB_TOKEN=${{ github.token }}
+          GITHUB_REPOSITORY=${{ github.repository }}
+          mkdir .cdf
+          curl -L \
+            -H "Accept: application/octet-stream" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -o .cdf/semver \
+            https://api.github.com/repos/martoc/semver/releases/assets/150340722
+          chmod 755 .cdf/semver
+          export CALCULATED_VERSION=$(.cdf/semver calculate)
+          echo "CALCULATED_VERSION=$CALCULATED_VERSION"
           export VERSION=${GITHUB_SHA:0:7}
           export BIN_NAME=$(basename `pwd`)
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
