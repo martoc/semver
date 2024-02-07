@@ -41,8 +41,17 @@ jobs:
       - name: Create GitHub Releases
         run: |
           TAG_NAME="v$VERSION"
-          git tag -a $TAG_NAME -m "$TAG_NAME"
-          git push origin --tags
+          RESPONSE=$(curl -sSL -H "Authorization: token $TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag\":\"$TAG_NAME\",\"message\":\"Tagging release $TAG_NAME\",\"object\":\"$(git rev-parse HEAD)\",\"type\":\"commit\"}" "https://api.github.com/repos/${{ github.repository }}/git/tags")
+          TAG_SHA=$(echo "$RESPONSE" | jq -r '.sha')
+          if [ "$TAG_SHA" != "" ]; then
+            echo "Failed to create tag"
+            exit 1
+          fi
+          RESPONSE=$(curl -sSL -H "Authorization: token $TOKEN" -H "Content-Type: application/json" -X POST -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$tag_sha\"}" "https://api.github.com/repos/${{ github.repository }}/git/refs")
+          if [ "$(echo "$RESPONSE" | jq -r '.ref')" != "refs/tags/$TAG_NAME" ]; then
+            echo "Failed to create ref"
+            exit 1
+          fi
           RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/${{ github.repository }}/releases")
           RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
           if [ "$RELEASE_ID" = "" ]; then
