@@ -46,17 +46,20 @@ jobs:
           RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag\":\"$TAG_NAME\",\"message\":\"Tagging release $TAG_NAME\",\"object\":\"$(git rev-parse HEAD)\",\"type\":\"commit\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/git/tags")
           TAG_SHA=$(echo "$RESPONSE" | jq -r '.sha')
           if [ "$TAG_SHA" != "" ]; then
+            echo "RESPONSE=$RESPONSE"
             echo "Failed to create tag"
             exit 1
           fi
           RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$TAG_SHA\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs")
           if [ "$(echo "$RESPONSE" | jq -r '.ref')" != "refs/tags/$TAG_NAME" ]; then
+            echo "RESPONSE=$RESPONSE"
             echo "Failed to create ref"
             exit 1
           fi
           RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
           RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
           if [ "$RELEASE_ID" = "" ]; then
+            echo "RESPONSE=$RESPONSE"
             echo "Failed to create github release"
             exit 1
           fi
@@ -64,6 +67,7 @@ jobs:
           if [[ "$(echo "$RESPONSE" | jq -r '.id')" != null ]]; then
             echo "Asset uploaded successfully!"
           else
+            echo "RESPONSE=$RESPONSE"
             echo "Failed to upload asset. RESPONSE: $RESPONSE"
             exit 1
           fi
