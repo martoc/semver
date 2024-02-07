@@ -41,13 +41,13 @@ jobs:
       - name: Create GitHub Releases
         run: |
           TAG_NAME="v$VERSION"
-          RESPONSE=$(curl -sSL -H "Authorization: token $TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag\":\"$TAG_NAME\",\"message\":\"Tagging release $TAG_NAME\",\"object\":\"$(git rev-parse HEAD)\",\"type\":\"commit\"}" "https://api.github.com/repos/${{ github.repository }}/git/tags")
+          RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -X POST -d "{\"tag\":\"$TAG_NAME\",\"message\":\"Tagging release $TAG_NAME\",\"object\":\"$(git rev-parse HEAD)\",\"type\":\"commit\"}" "https://api.github.com/repos/${{ github.repository }}/git/tags")
           TAG_SHA=$(echo "$RESPONSE" | jq -r '.sha')
           if [ "$TAG_SHA" != "" ]; then
             echo "Failed to create tag"
             exit 1
           fi
-          RESPONSE=$(curl -sSL -H "Authorization: token $TOKEN" -H "Content-Type: application/json" -X POST -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$tag_sha\"}" "https://api.github.com/repos/${{ github.repository }}/git/refs")
+          RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -X POST -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$tag_sha\"}" "https://api.github.com/repos/${{ github.repository }}/git/refs")
           if [ "$(echo "$RESPONSE" | jq -r '.ref')" != "refs/tags/$TAG_NAME" ]; then
             echo "Failed to create ref"
             exit 1
@@ -58,7 +58,7 @@ jobs:
             echo "Failed to create github release"
             exit 1
           fi
-          RESPONSE=$(curl -sSL "${HEADERS[@]}" --data-binary @"target/$BIN_NAME" "https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=$BIN_NAME")
+          RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" --data-binary @"target/$BIN_NAME" "https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=$BIN_NAME")
           if [[ "$(echo "$RESPONSE" | jq -r '.id')" != null ]]; then
             echo "Asset uploaded successfully!"
           else
