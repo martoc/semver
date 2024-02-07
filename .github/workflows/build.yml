@@ -21,18 +21,10 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.21.0'
+      - name: Tag
+        uses: martoc/action-tag@eb7f93cc708c440e3988564765c5011e69089ff7
       - name: Init build
         run: |
-          GITHUB_TOKEN=${{ github.token }}
-          GITHUB_REPOSITORY=${{ github.repository }}
-          mkdir -p .cdf
-          curl -L \
-            -H "Accept: application/octet-stream" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -o .cdf/semver \
-            https://api.github.com/repos/martoc/semver/releases/assets/150340722
-          chmod 755 .cdf/semver
-          export VERSION=$(.cdf/semver calculate)
           export BIN_NAME=$(basename `pwd`)
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "BIN_NAME=$BIN_NAME" >> "$GITHUB_ENV"
@@ -49,23 +41,8 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Create GitHub Releases
         run: |
-          TAG_NAME="v$VERSION"
           GITHUB_TOKEN=${{ github.token }}
           GITHUB_REPOSITORY=${{ github.repository }}
-          RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag\":\"$TAG_NAME\",\"message\":\"Tagging release $TAG_NAME\",\"object\":\"$(git rev-parse HEAD)\",\"type\":\"commit\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/git/tags")
-          TAG_SHA=$(echo "$RESPONSE" | jq -r '.sha')
-          if [ "$TAG_SHA" == "" ]; then
-            echo "RESPONSE=$RESPONSE"
-            echo "Failed to create tag"
-            exit 1
-          fi
-          RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"ref\":\"refs/tags/$TAG_NAME\",\"sha\":\"$TAG_SHA\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs")
-          REF=$(echo "$RESPONSE" | jq -r '.ref')
-          if [ "$REF" = "" ]; then
-            echo "RESPONSE=$RESPONSE"
-            echo "Failed to create ref"
-            exit 1
-          fi
           RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
           RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
           if [ "$RELEASE_ID" = "" ]; then
