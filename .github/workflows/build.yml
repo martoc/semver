@@ -25,16 +25,14 @@ jobs:
         run: |
           GITHUB_TOKEN=${{ github.token }}
           GITHUB_REPOSITORY=${{ github.repository }}
-          mkdir .cdf
+          mkdir -p .cdf
           curl -L \
             -H "Accept: application/octet-stream" \
             -H "Authorization: token $GITHUB_TOKEN" \
             -o .cdf/semver \
             https://api.github.com/repos/martoc/semver/releases/assets/150340722
           chmod 755 .cdf/semver
-          export CALCULATED_VERSION=$(.cdf/semver calculate)
-          echo "CALCULATED_VERSION=$CALCULATED_VERSION"
-          export VERSION=${GITHUB_SHA:0:7}
+          export VERSION=$(.cdf/semver calculate)
           export BIN_NAME=$(basename `pwd`)
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "BIN_NAME=$BIN_NAME" >> "$GITHUB_ENV"
