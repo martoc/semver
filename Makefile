@@ -74,14 +74,3 @@ check: ## Run checks
 	@echo "==> Running checks..."
 	go mod verify
 	go vet -all $(PACKAGES)
-
-.PHONY: publish
-publish: ## Publish the binary
-	@echo "==> Publishing..."
-	curl -X PUT \
-		-H "Authorization: token $(GITHUB_TOKEN)" \
-		--data-binary "@$(TARGET)/$(BIN_NAME)" \
-		"https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)" || exit 1
-	curl -X GET \
-		-H "Authorization: token $(GITHUB_TOKEN)" "https://maven.pkg.github.com/$(shell echo $$GITHUB_REPOSITORY)/$(BIN_VERSION)/bin/$(BIN_NAME)-$(BIN_VERSION)" 
-	ls -l

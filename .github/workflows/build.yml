@@ -39,5 +39,3 @@ jobs:
           file: target/coverage.out
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Publish Binary
-        run: make publish GITHUB_TOKEN=${{ github.token }}
