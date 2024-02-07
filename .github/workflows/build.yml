@@ -38,10 +38,12 @@ jobs:
           file: target/coverage.out
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Upload to GitHub Releases
+      - name: Create GitHub Releases
         run: |
           TAG_NAME="v$VERSION"
-            RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/${{ github.repository }}/releases")
+          git tag -a $TAG_NAME -m "$TAG_NAME"
+          git push origin --tags
+          RESPONSE=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/${{ github.repository }}/releases")
           RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
           if [ "$RELEASE_ID" = "" ]; then
             echo "Failed to create github release"
