@@ -103,7 +103,7 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
-    - ireturn
+    # - ireturn
     - lll
     - loggercheck
     - maintidx
