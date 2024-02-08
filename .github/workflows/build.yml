@@ -26,7 +26,7 @@ jobs:
         with:
           repository: martoc/action-tag
           ref: eb7f93cc708c440e3988564765c5011e69089ff7
-          token: ${{ github.token }}
+          token: ${{ secrets.ACTION_GITHUB_TOKEN }}
           path: ./.github/actions/action-tag
       - name: Tag
         uses: ./.github/actions/action-tag
