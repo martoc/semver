@@ -5,7 +5,16 @@ load 'test_helper/bats-assert/load'
 load 'common.sh'
 
 @test "Calculate new semver" {
-  run $BINARY_PATH calculate
+  BASE=$PWD
+  rm -rf .tmp/repository
+  mkdir -p .tmp/repository
+  cd .tmp/repository
+  git init
+  date > file.txt
+  git add file.txt
+  git commit -m "feat: Initial commit"
+  cd $BASE
+  run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal $output "${GITHUB_SHA:0:7}"
+  assert_equal $output "0.1.0"
 }
