@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.21.0'
-      - name: Check out repository
+      - name: Check out action-tag repository
         uses: actions/checkout@v4
         with:
           repository: martoc/action-tag
@@ -46,22 +46,12 @@ jobs:
           file: target/coverage.out
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Create GitHub Releases
-        run: |
-          GITHUB_TOKEN=${{ github.token }}
-          GITHUB_REPOSITORY=${{ github.repository }}
-          RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST -d "{\"tag_name\":\"$TAG_NAME\",\"name\":\"$TAG_NAME\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")
-          RELEASE_ID=$(echo "$RESPONSE" | jq -r '.id')
-          if [ "$RELEASE_ID" = "" ]; then
-            echo "RESPONSE=$RESPONSE"
-            echo "Failed to create github release"
-            exit 1
-          fi
-          RESPONSE=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" --data-binary @"target/$BIN_NAME" "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID/assets?name=$BIN_NAME")
-          if [[ "$(echo "$RESPONSE" | jq -r '.id')" != null ]]; then
-            echo "Asset uploaded successfully!"
-          else
-            echo "RESPONSE=$RESPONSE"
-            echo "Failed to upload asset. RESPONSE: $RESPONSE"
-            exit 1
-          fi
+      - name: Check out action-release repository
+        uses: actions/checkout@v4
+        with:
+          repository: martoc/action-release
+          ref: 71e271cae82bd621d49a2f8f2f53eeb5568dd41b
+          token: ${{ secrets.ACTION_GITHUB_TOKEN }}
+          path: ./.github/actions/action-release
+      - name: Tag
+        uses: ./.github/actions/action-release
