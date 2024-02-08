@@ -197,10 +197,10 @@ func (s *ScmGit) getTags(commit *object.Commit, tags storer.ReferenceIter) []*se
 
 		tagCommit, errCommit := s.Repo.CommitObject(tag.Hash())
 		if errCommit != nil {
-			logger.Instance.Println(errCommit)
+			logger.Instance.Println(tag.Name(), errCommit)
 		}
 
-		if tagCommit.Hash == commit.Hash {
+		if tagCommit != nil && tagCommit.Hash == commit.Hash {
 			version, errSemver := semver.Make(s.cleanVersion(tag.Name().Short()))
 			if errSemver != nil {
 				logger.Instance.Println(errSemver)
