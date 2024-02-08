@@ -8,7 +8,14 @@ import (
 //go:generate ${GOPATH}/bin/mockgen -source=calculate.go -destination=./calculate_mock.go -package=core
 
 type CalculateCommandBuilder struct {
-	Scm Scm
+	Scm  Scm
+	Path string
+}
+
+// NewCalculateCommandBuilder creates a new instance of CalculateCommandBuilder.
+// It returns a pointer to the newly created CalculateCommandBuilder.
+func NewCalculateCommandBuilder() *CalculateCommandBuilder {
+	return &CalculateCommandBuilder{}
 }
 
 // SetScm sets the source control management (SCM) for the CalculateCommandBuilder.
@@ -19,9 +26,22 @@ func (b *CalculateCommandBuilder) SetScm(scm Scm) *CalculateCommandBuilder {
 	return b
 }
 
+// SetPath sets the path for the CalculateCommandBuilder.
+// It takes a string parameter 'path' and assigns it to the 'Path' field of the CalculateCommandBuilder.
+// It returns a pointer to the CalculateCommandBuilder for method chaining.
+func (b *CalculateCommandBuilder) SetPath(path string) *CalculateCommandBuilder {
+	b.Path = path
+
+	return b
+}
+
 // Build returns a Command built from the CalculateCommandBuilder.
 // It creates a CalculateCommandImpl with the provided Scm.
 func (b *CalculateCommandBuilder) Build() Command {
+	if b.Scm == nil {
+		b.Scm = NewScmGitBuilder().SetPath(b.Path).Build()
+	}
+
 	return &CalculateCommandImpl{
 		Scm: b.Scm,
 	}
@@ -53,6 +73,8 @@ func (c *CalculateCommandImpl) Execute() (string, error) {
 			}
 		}
 	}
+
+	nextTag.IncrementMinor() //nolint: errcheck
 
 	return nextTag.String(), nil
 }

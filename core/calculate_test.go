@@ -39,7 +39,7 @@ func TestCalculateCommandImpl_ShouldReturnMayorVersion(t *testing.T) {
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.0.2", result)
+	assert.Equal(t, "2.1.0", result)
 	assert.Nil(t, err)
 }
 
@@ -106,4 +106,27 @@ func TestCalculateCommandBuilder_Build(t *testing.T) {
 	// Assert the Scm field is set correctly
 	assert.True(t, ok)
 	assert.Equal(t, mockScm, command.(*core.CalculateCommandImpl).Scm) //nolint:forcetypeassert
+}
+
+func TestNewCalculateCommandBuilder(t *testing.T) {
+	t.Parallel()
+
+	// Call NewCalculateCommandBuilder
+	builder := core.NewCalculateCommandBuilder()
+
+	// Assert the builder is not nil
+	assert.NotNil(t, builder)
+}
+
+func TestCalculateCommandBuilder_SetPath(t *testing.T) {
+	t.Parallel()
+
+	// Create a CalculateCommandBuilder instance
+	builder := &core.CalculateCommandBuilder{}
+
+	// Call SetPath method
+	result := builder.SetPath("/path/to/file")
+
+	// Assert the Path field is set correctly
+	assert.Equal(t, "/path/to/file", result.Path)
 }

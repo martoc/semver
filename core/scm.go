@@ -82,6 +82,38 @@ type ScmGit struct {
 	Repo GitRepo
 }
 
+type ScmGitBuilder struct {
+	Path string
+	Repo GitRepo
+}
+
+func NewScmGitBuilder() *ScmGitBuilder {
+	return &ScmGitBuilder{}
+}
+
+func (b *ScmGitBuilder) SetPath(path string) *ScmGitBuilder {
+	b.Path = path
+
+	return b
+}
+
+func (b *ScmGitBuilder) SetRepo(repo GitRepo) *ScmGitBuilder {
+	b.Repo = repo
+
+	return b
+}
+
+func (b *ScmGitBuilder) Build() Scm {
+	if b.Repo == nil {
+		b.Repo = &GitRepoImpl{}
+	}
+
+	return &ScmGit{
+		Path: b.Path,
+		Repo: b.Repo,
+	}
+}
+
 // GetCommitLog retrieves the commit history of the Git repository.
 // It returns a slice of CommitLog structs representing each commit,
 // along with associated information such as the commit hash, message,
