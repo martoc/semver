@@ -46,6 +46,8 @@ func (b *CalculateCommandBuilder) Build() Command {
 	}
 }
 
+// CalculateCommandImpl represents an implementation of the CalculateCommand interface.
+// It contains a Command and Scm field.
 type CalculateCommandImpl struct {
 	Command
 	Scm Scm
