@@ -55,7 +55,8 @@ func TestCalculateCommandImpl_ShouldReturnNextVersion(t *testing.T) {
 	// Set up expectations for GetCommitLog method
 	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
 		{
-			Tags: []*semver.Version{},
+			Tags:    []*semver.Version{},
+			Message: "feat: add new feature",
 		},
 		{
 			Tags: []*semver.Version{

@@ -75,7 +75,18 @@ func (c *CalculateCommandImpl) Execute() (string, error) {
 		nextTag = c.GetGreatestTag(nextTag, commit.Tags)
 	}
 
-	nextTag.IncrementMinor() //nolint: errcheck
+	updateType := GetVersionUpdate(commitLogs[0].Message)
+
+	switch updateType {
+	case MAJOR:
+		nextTag.IncrementMajor() //nolint: errcheck
+	case MINOR:
+		nextTag.IncrementMinor() //nolint: errcheck
+	case PATCH:
+		nextTag.IncrementPatch() //nolint: errcheck
+	default:
+		nextTag.IncrementPatch() //nolint: errcheck
+	}
 
 	return nextTag.String(), nil
 }
