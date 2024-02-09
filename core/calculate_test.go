@@ -130,3 +130,64 @@ func TestCalculateCommandBuilder_SetPath(t *testing.T) {
 	// Assert the Path field is set correctly
 	assert.Equal(t, "/path/to/file", result.Path)
 }
+
+func TestCalculateCommandBuilder_SetScm(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Create a CalculateCommandBuilder instance
+	builder := &core.CalculateCommandBuilder{}
+
+	// Call SetScm method
+	result := builder.SetScm(mockScm)
+
+	// Assert the Scm field is set correctly
+	assert.Equal(t, mockScm, result.Scm)
+}
+
+func TestCalculateCommandBuilder_BuildWithNilScm(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a CalculateCommandBuilder instance
+	builder := &core.CalculateCommandBuilder{}
+
+	// Call Build method
+	command := builder.Build()
+
+	_, ok := command.(*core.CalculateCommandImpl)
+
+	// Assert the Scm field is set correctly
+	assert.True(t, ok)
+	assert.NotNil(t, command.(*core.CalculateCommandImpl).Scm) //nolint:forcetypeassert
+}
+
+func TestCalculateCommandBuilder_BuildWithExistingScm(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Create a CalculateCommandBuilder instance
+	builder := &core.CalculateCommandBuilder{}
+	builder.SetScm(mockScm)
+
+	// Call Build method
+	command := builder.Build()
+
+	_, ok := command.(*core.CalculateCommandImpl)
+
+	// Assert the Scm field is set correctly
+	assert.True(t, ok)
+	assert.Equal(t, mockScm, command.(*core.CalculateCommandImpl).Scm) //nolint:forcetypeassert
+}

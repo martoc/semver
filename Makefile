@@ -61,7 +61,7 @@ install: ## Install development dependencies
 	@echo "==> Installing dependencies..."
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.0
 	go install github.com/golang/mock/mockgen@v1.6.0
-	go install mvdan.cc/gofumpt@v0.5.0
+	go install mvdan.cc/gofumpt@v0.6.0
 	go install golang.org/x/tools/cmd/godoc@v0.12.0
 
 .PHONY: lint
