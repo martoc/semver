@@ -5,8 +5,7 @@ import (
 	"github.com/blang/semver/v4"
 )
 
-//go:generate ${GOPATH}/bin/mockgen -source=calculate.go -destination=./calculate_mock.go -package=core
-
+// CalculateCommand is an interface for the CalculateCommandImpl.
 type CalculateCommandBuilder struct {
 	Scm  Scm
 	Path string

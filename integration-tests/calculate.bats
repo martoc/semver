@@ -12,7 +12,7 @@ load 'common.sh'
   assert_equal $output "0.1.0"
 }
 
-@test "Repository with tags and multiple updates" {
+@test "Repository with tags and multiple tagged updates and one non tagged update" {
   create_repository
   update_repository && tag_repository "v1.0.0"
   update_repository && tag_repository "v1.1.0"
@@ -21,4 +21,28 @@ load 'common.sh'
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
   assert_equal $output "1.3.0"
+}
+
+@test "Repository with tags and multiple tags updates and multiple non tagged" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository && tag_repository "v1.1.0"
+  update_repository && tag_repository "v1.2.0"
+  update_repository
+  update_repository
+  update_repository
+  run $BINARY_PATH calculate --path .tmp/repository
+  assert_success
+  assert_equal $output "1.3.0"
+}
+
+@test "Repository with nonsemantic tags and multiple tags updates and multiple non tagged" {
+  create_repository
+  update_repository && tag_repository "vahdfgahjsdhs"
+  update_repository && tag_repository "vasdasds"
+  update_repository && tag_repository "vdjhfjsdhfjd"
+  update_repository
+  run $BINARY_PATH calculate --path .tmp/repository
+  assert_success
+  assert_equal $output "0.1.0"
 }
