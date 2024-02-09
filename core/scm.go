@@ -189,7 +189,7 @@ func (s *ScmGit) getTags(commit *object.Commit, tags storer.ReferenceIter) []*se
 
 		tagCommit, errCommit := s.Repo.CommitObject(tag.Hash())
 		if errCommit != nil {
-			logger.GetInstance().Error(tag.Name(), errCommit)
+			logger.GetInstance().Error(tag.Name(), " - ", tag.Hash(), ": ", errCommit)
 		}
 
 		if tagCommit != nil && tagCommit.Hash == commit.Hash {
