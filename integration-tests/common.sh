@@ -33,7 +33,7 @@ update_repository() {
   cd .tmp/repository
   date >> file.txt
   git add file.txt
-  git commit -m "$CHANGE_TYPR: Update file.txt"
+  git commit -m "$CHANGE_TYPE: Update file.txt"
   cd $BASE
 }
 
