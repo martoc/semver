@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,6 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number",
 	Long:  `All software has versions`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(CLIVersion) //nolint:forbidigo
+		fmt.Fprintln(os.Stdout, CLIVersion)
 	},
 }
