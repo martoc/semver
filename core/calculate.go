@@ -65,17 +65,27 @@ func (c *CalculateCommandImpl) Execute() (string, error) {
 
 	nextTag, _ := semver.Make("0.0.0")
 
+	if len(commitLogs) > 0 && len(commitLogs[0].Tags) > 0 {
+		nextTag = c.GetGreatestTag(nextTag, commitLogs[0].Tags)
+
+		return nextTag.String(), nil
+	}
+
 	for _, commit := range commitLogs {
-		if commit.Tags != nil {
-			for _, tag := range commit.Tags {
-				if nextTag.LT(*tag) {
-					nextTag = *tag
-				}
-			}
-		}
+		nextTag = c.GetGreatestTag(nextTag, commit.Tags)
 	}
 
 	nextTag.IncrementMinor() //nolint: errcheck
 
 	return nextTag.String(), nil
+}
+
+func (c *CalculateCommandImpl) GetGreatestTag(nextTag semver.Version, tags []*semver.Version) semver.Version {
+	for _, tag := range tags {
+		if nextTag.LT(*tag) {
+			nextTag = *tag
+		}
+	}
+
+	return nextTag
 }

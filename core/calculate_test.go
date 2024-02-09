@@ -12,7 +12,7 @@ import (
 
 var errExpectedFromTest = errors.New("some error")
 
-func TestCalculateCommandImpl_ShouldReturnMayorVersion(t *testing.T) {
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersion(t *testing.T) {
 	t.Parallel()
 	ctrl := gomock.NewController(t)
 
@@ -23,6 +23,40 @@ func TestCalculateCommandImpl_ShouldReturnMayorVersion(t *testing.T) {
 
 	// Set up expectations for GetCommitLog method
 	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags: []*semver.Version{
+				{Major: 1, Minor: 0, Patch: 0},
+				{Major: 2, Minor: 0, Patch: 2},
+				{Major: 2, Minor: 0, Patch: 1},
+			},
+		},
+	}, nil)
+
+	// Create CalculateCommandImpl with the mock Scm
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+
+	// Call Execute method
+	result, err := calculateCommand.Execute()
+
+	// Assert the result
+	assert.Equal(t, "2.0.2", result)
+	assert.Nil(t, err)
+}
+
+func TestCalculateCommandImpl_ShouldReturnNextVersion(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Set up expectations for GetCommitLog method
+	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags: []*semver.Version{},
+		},
 		{
 			Tags: []*semver.Version{
 				{Major: 1, Minor: 0, Patch: 0},

@@ -12,6 +12,14 @@ load 'common.sh'
   assert_equal "0.1.0" $output
 }
 
+@test "New repository one tag one commit" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  run $BINARY_PATH calculate --path .tmp/repository
+  assert_success
+  assert_equal "1.0.0" $output
+}
+
 @test "Repository with tags and multiple tagged updates and one non tagged update" {
   create_repository
   update_repository && tag_repository "v1.0.0"
