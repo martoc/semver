@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: martoc/action-tag
-          ref: 8b4eabfdf946feaf6bd85f42241b915cbcead781
+          ref: eb7f93cc708c440e3988564765c5011e69089ff7
           token: ${{ secrets.ACTION_GITHUB_TOKEN }}
           path: ./.github/actions/action-tag
       - name: Tag
