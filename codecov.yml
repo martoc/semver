@@ -20,3 +20,7 @@ coverage:
 
 github_checks:
     annotations: false
+
+ignore:
+  - "**/*_mock.go"
+  - "**/*_test.go"
