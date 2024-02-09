@@ -11,3 +11,35 @@ BINARY_PATH="./target/semver"
 echo "VERSION=$VERSION"
 echo "BINARY_PATH=$BINARY_PATH"
 echo "GITHUB_SHA=$GITHUB_SHA"
+
+create_repository() {
+  BASE=$PWD
+  rm -rf .tmp/repository
+  mkdir -p .tmp/repository
+  cd .tmp/repository
+  git init
+  git checkout -b main
+  git config user.email "integration-tests@build.com"
+  git config user.name "Integration Test"
+  cd $BASE
+}
+
+update_repository() {
+  BASE=$PWD
+  CHANGE_TYPE=$1
+  if [ "$1" = "" ]; then
+    CHANGE_TYPE="feat"
+  fi
+  cd .tmp/repository
+  date >> file.txt
+  git add file.txt
+  git commit -m "$CHANGE_TYPR: Update file.txt"
+  cd $BASE
+}
+
+tag_repository() {
+  BASE=$PWD
+  cd .tmp/repository
+  git tag $1
+  cd $BASE
+}

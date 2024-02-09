@@ -21,8 +21,8 @@ type CommitLog struct {
 	BranchName string
 }
 
-//go:generate ${GOPATH}/bin/mockgen -destination=./mock_commit_iter.go -package=core github.com/go-git/go-git/v5/plumbing/object CommitIter
-//go:generate ${GOPATH}/bin/mockgen -destination=./mock_reference_iter.go -package=core github.com/go-git/go-git/v5/plumbing/storer ReferenceIter
+//go:generate ${GOPATH}/bin/mockgen -destination=./commit_iter_mock.go -package=core github.com/go-git/go-git/v5/plumbing/object CommitIter
+//go:generate ${GOPATH}/bin/mockgen -destination=./reference_iter_mock.go -package=core github.com/go-git/go-git/v5/plumbing/storer ReferenceIter
 //go:generate ${GOPATH}/bin/mockgen -source=scm.go -destination=./scm_mock.go -package=core
 
 type Scm interface {

@@ -4,20 +4,21 @@ load 'test_helper/bats-support/load'
 load 'test_helper/bats-assert/load'
 load 'common.sh'
 
-@test "Calculate new semver" {
-  BASE=$PWD
-  rm -rf .tmp/repository
-  mkdir -p .tmp/repository
-  cd .tmp/repository
-  git init
-  git checkout -b main
-  git config user.email "integration-tests@build.com"
-  git config user.name "Integration Test"
-  date > file.txt
-  git add file.txt
-  git commit -m "feat: Initial commit"
-  cd $BASE
+@test "New repository no tags one commit" {
+  create_repository
+  update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
   assert_equal $output "0.1.0"
+}
+
+@test "Repository with tags and multiple updates" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository && tag_repository "v1.1.0"
+  update_repository && tag_repository "v1.2.0"
+  update_repository
+  run $BINARY_PATH calculate --path .tmp/repository
+  assert_success
+  assert_equal $output "1.3.0"
 }
