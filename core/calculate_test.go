@@ -12,7 +12,7 @@ import (
 
 var errExpectedFromTest = errors.New("some error")
 
-func TestCalculateCommandImpl_ShouldReturnSameTaggedVersion(t *testing.T) {
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldNotBumpVersion(t *testing.T) {
 	t.Parallel()
 	ctrl := gomock.NewController(t)
 
@@ -40,6 +40,111 @@ func TestCalculateCommandImpl_ShouldReturnSameTaggedVersion(t *testing.T) {
 
 	// Assert the result
 	assert.Equal(t, "2.0.2", result)
+	assert.Nil(t, err)
+}
+
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldIncreaseMayor(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Set up expectations for GetCommitLog method
+	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags:    []*semver.Version{},
+			Message: "feat!: add new feature",
+		},
+		{
+			Tags: []*semver.Version{
+				{Major: 1, Minor: 0, Patch: 0},
+				{Major: 2, Minor: 0, Patch: 2},
+				{Major: 2, Minor: 0, Patch: 1},
+			},
+		},
+	}, nil)
+
+	// Create CalculateCommandImpl with the mock Scm
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+
+	// Call Execute method
+	result, err := calculateCommand.Execute()
+
+	// Assert the result
+	assert.Equal(t, "3.0.0", result)
+	assert.Nil(t, err)
+}
+
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldIncreaseMinor(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Set up expectations for GetCommitLog method
+	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags:    []*semver.Version{},
+			Message: "feat: add new feature",
+		},
+		{
+			Tags: []*semver.Version{
+				{Major: 1, Minor: 0, Patch: 0},
+				{Major: 2, Minor: 0, Patch: 2},
+				{Major: 2, Minor: 0, Patch: 1},
+			},
+		},
+	}, nil)
+
+	// Create CalculateCommandImpl with the mock Scm
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+
+	// Call Execute method
+	result, err := calculateCommand.Execute()
+
+	// Assert the result
+	assert.Equal(t, "2.1.0", result)
+	assert.Nil(t, err)
+}
+
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldIncreasePatch(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Set up expectations for GetCommitLog method
+	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags:    []*semver.Version{},
+			Message: "fix: add new feature",
+		},
+		{
+			Tags: []*semver.Version{
+				{Major: 1, Minor: 0, Patch: 0},
+				{Major: 2, Minor: 0, Patch: 2},
+				{Major: 2, Minor: 0, Patch: 1},
+			},
+		},
+	}, nil)
+
+	// Create CalculateCommandImpl with the mock Scm
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+
+	// Call Execute method
+	result, err := calculateCommand.Execute()
+
+	// Assert the result
+	assert.Equal(t, "2.0.3", result)
 	assert.Nil(t, err)
 }
 
