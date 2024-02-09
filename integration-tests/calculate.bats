@@ -10,6 +10,9 @@ load 'common.sh'
   mkdir -p .tmp/repository
   cd .tmp/repository
   git init
+  git checkout -b main
+  git config user.email "integration-tests@build.com"
+  git config user.name "Integration Test"
   date > file.txt
   git add file.txt
   git commit -m "feat: Initial commit"
