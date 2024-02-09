@@ -78,3 +78,18 @@ func TestScmGit_GetCommitLog(t *testing.T) {
 
 	assert.Equal(t, expectedCommitLog, commitLogs[0])
 }
+
+func TestScmGitBuilder_SetRepo(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	mockRepo := core.NewMockGitRepo(ctrl)
+
+	builder := &core.ScmGitBuilder{}
+
+	result := builder.SetRepo(mockRepo)
+
+	assert.Equal(t, mockRepo, result.Repo)
+}
