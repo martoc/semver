@@ -53,10 +53,7 @@ type CalculateCommandImpl struct {
 	Scm Scm
 }
 
-// Execute executes the CalculateCommandImpl command and returns the next tag version based on the commit logs.
-// It retrieves the commit logs using the Scm interface and iterates through each commit to find the highest tag version.
-// The highest tag version is returned as a string.
-// If an error occurs while retrieving the commit logs, an empty string and the error are returned.
+// Execute executes the CalculateCommandImpl command and returns the next version tag string and any error encountered.
 func (c *CalculateCommandImpl) Execute() (string, error) {
 	commitLogs, err := c.Scm.GetCommitLog()
 	if err != nil {
