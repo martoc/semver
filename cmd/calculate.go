@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/martoc/semver/core"
@@ -21,9 +22,9 @@ var calculateCmd = &cobra.Command{
 		path, _ := cmd.Flags().GetString("path")
 		result, err := core.NewCalculateCommandBuilder().SetPath(path).Build().Execute()
 		if err != nil {
-			logger.Instance.Println(err)
+			logger.GetInstance().Error(err)
 			os.Exit(1)
 		}
-		cmd.Println(result)
+		fmt.Fprintln(os.Stdout, result)
 	},
 }

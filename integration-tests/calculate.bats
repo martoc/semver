@@ -9,7 +9,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal $output "0.1.0"
+  assert_equal "0.1.0" $output
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged update" {
@@ -20,7 +20,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal $output "1.3.0"
+  assert_equal "1.3.0" $output
 }
 
 @test "Repository with tags and multiple tags updates and multiple non tagged" {
@@ -33,7 +33,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal $output "1.3.0"
+  assert_equal "1.3.0" $output
 }
 
 @test "Repository with nonsemantic tags and multiple tags updates and multiple non tagged" {
@@ -44,5 +44,5 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal $output "0.1.0"
+  assert_equal "0.1.0" $output
 }

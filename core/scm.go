@@ -123,22 +123,22 @@ func (s *ScmGit) GetCommitLog() ([]*CommitLog, error) {
 	// Open the Git repository
 	err := s.Repo.PlainOpen(s.Path)
 	if err != nil {
-		logger.Instance.Println(err)
+		return nil, err
 	}
 
 	// Get the HEAD reference
 	ref, err := s.Repo.Head()
 	if err != nil {
-		logger.Instance.Println(err)
+		return nil, err
 	}
 
 	// Retrieve the commit history starting from HEAD
 	commitIter, err := s.Repo.Log(&git.LogOptions{From: ref.Hash()})
 	if err != nil {
-		logger.Instance.Println(err)
+		return nil, err
 	}
 
-	var commitLogs []*CommitLog
+	commitLogs := []*CommitLog{}
 	// Iterate over commits and display commit information using for loop
 	for {
 		commit, errCommitIter := commitIter.Next()
@@ -150,14 +150,10 @@ func (s *ScmGit) GetCommitLog() ([]*CommitLog, error) {
 		// Get the tags associated with the commit
 		tags, errTags := s.Repo.Tags()
 		if errTags != nil {
-			logger.Instance.Println(errTags)
+			logger.GetInstance().Error(errTags)
 		}
 
 		tagNames := s.getTags(commit, tags)
-
-		if err != nil {
-			logger.Instance.Println(err)
-		}
 
 		if ref.Hash() == commit.Hash {
 			isHead = true
@@ -173,11 +169,7 @@ func (s *ScmGit) GetCommitLog() ([]*CommitLog, error) {
 		})
 	}
 
-	if err != nil {
-		logger.Instance.Println(err)
-	}
-
-	return commitLogs, nil
+	return commitLogs, nil //nolint:nilerr
 }
 
 // getTags returns a slice of semver.Version representing the tags associated with the given commit.
@@ -197,13 +189,13 @@ func (s *ScmGit) getTags(commit *object.Commit, tags storer.ReferenceIter) []*se
 
 		tagCommit, errCommit := s.Repo.CommitObject(tag.Hash())
 		if errCommit != nil {
-			logger.Instance.Println(tag.Name(), errCommit)
+			logger.GetInstance().Error(tag.Name(), errCommit)
 		}
 
 		if tagCommit != nil && tagCommit.Hash == commit.Hash {
 			version, errSemver := semver.Make(s.cleanVersion(tag.Name().Short()))
 			if errSemver != nil {
-				logger.Instance.Println(errSemver)
+				logger.GetInstance().Error(tag.Name().Short(), errSemver)
 			}
 
 			tagNames = append(tagNames, &version)
