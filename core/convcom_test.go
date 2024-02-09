@@ -86,3 +86,13 @@ func Test_GetVersionUpdate_RefactorUpdateWithBreakingChangeAndTicket(t *testing.
 	assert.Equal(t, expectedUpdate, result,
 		"Unexpected version update for refactor update with breaking change and ticket.")
 }
+
+func Test_GetVersionUpdate_WhateverShouldUpdatePatch(t *testing.T) {
+	t.Parallel()
+
+	commitMessage := "whatever: improve code"
+	expectedUpdate := core.PATCH
+	result := core.GetVersionUpdate(commitMessage)
+	assert.Equal(t, expectedUpdate, result,
+		"Unexpected version update for refactor update.")
+}
