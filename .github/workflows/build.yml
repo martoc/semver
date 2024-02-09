@@ -50,8 +50,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: martoc/action-release
-          ref: 71e271cae82bd621d49a2f8f2f53eeb5568dd41b
+          ref: fb97b616cf520c9887f897eb0a8242923256563c
           token: ${{ secrets.ACTION_GITHUB_TOKEN }}
           path: ./.github/actions/action-release
-      - name: Tag
+      - name: Release on GitHub
         uses: ./.github/actions/action-release
