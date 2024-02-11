@@ -29,10 +29,12 @@ jobs:
         with:
           repository: martoc/action-tag
           ref: main
-          token: ${{ secrets.ACTION_GITHUB_TOKEN }}
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           path: ./.github/actions/action-tag
       - name: Tag
         uses: ./.github/actions/action-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       - name: Init build
         run: |
           export BIN_NAME=$(basename `pwd`)
