@@ -34,7 +34,7 @@ jobs:
       - name: Tag
         uses: ./.github/actions/action-tag
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          PERSONAL_GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       - name: Init build
         run: |
           export BIN_NAME=$(basename `pwd`)
