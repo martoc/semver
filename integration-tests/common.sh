@@ -1,5 +1,5 @@
-if [ -z "$VERSION" ]; then
-  export VERSION="0.0.0"
+if [ -z "$TAG_VERSION" ]; then
+  export TAG_VERSION="1.0.0"
 fi
 
 if [ -z "$GITHUB_SHA" ]; then

@@ -7,5 +7,5 @@ load 'common.sh'
 @test "Get CLI Version" {
   run $BINARY_PATH version
   assert_success
-  assert_equal $output $VERSION
+  assert_equal $output $TAG_VERSION
 }

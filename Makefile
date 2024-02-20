@@ -6,7 +6,7 @@ TARGET := ./target
 GOPATH := $(shell go env GOPATH)
 BIN_VERSION := $(shell echo $$TAG_VERSION)
 ifeq ($(strip $(BIN_VERSION)),)
-BIN_VERSION := 0.0.0
+BIN_VERSION := 1.0.0
 endif
 
 .PHONY: all
