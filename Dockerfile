@@ -1,5 +1,5 @@
-FROM scratch
+FROM alpine:3.19.1
 
-COPY target/semver /bin/semver
+COPY target/semver /semver
 
-ENTRYPOINT ["/bin/semver"]
+ENTRYPOINT ["/semver"]

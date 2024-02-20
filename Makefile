@@ -29,7 +29,7 @@ build: check lint ## Build the binary
 	@mkdir -p $(TARGET)
 	go test -coverprofile=$(TARGET)/coverage.out $(PACKAGES)
 	go tool cover -html=$(TARGET)/coverage.out -o $(TARGET)/coverage.html
-	go build -ldflags " \
+	GOOS=linux go build -ldflags " \
 				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION) \
 				" \
 			-o $(TARGET)/$(BIN_NAME) main.go
