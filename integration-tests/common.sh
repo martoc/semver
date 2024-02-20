@@ -8,7 +8,7 @@ fi
 
 BINARY_PATH="./target/semver"
 
-echo "VERSION=$VERSION"
+echo "TAG_VERSION=$TAG_VERSION"
 echo "BINARY_PATH=$BINARY_PATH"
 echo "GITHUB_SHA=$GITHUB_SHA"
 
