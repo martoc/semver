@@ -33,6 +33,7 @@ build: check lint ## Build the binary
 				-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION) \
 				" \
 			-o $(TARGET)/$(BIN_NAME) main.go
+	chmod 755 $(TARGET)/$(BIN_NAME)
 
 .PHONY: run-integration-tests
 run-integration-tests: ## Run integration tests
