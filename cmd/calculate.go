@@ -17,7 +17,7 @@ var calculateCmd = &cobra.Command{
 	Use:   "calculate",
 	Short: "Calculates a new semantic version based on the latest commit message in the repository",
 	Long: `Calculates a new semantic version based on the latest commit message in the repository
-		using semantic versioning and conventional commits`,
+		using semantic versioning and conventional commits (https://www.conventionalcommits.org/en/v1.0.0-beta.4/)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		path, _ := cmd.Flags().GetString("path")
 		result, err := core.NewCalculateCommandBuilder().SetPath(path).Build().Execute()
