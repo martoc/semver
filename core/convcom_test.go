@@ -96,3 +96,13 @@ func Test_GetVersionUpdate_WhateverShouldUpdatePatch(t *testing.T) {
 	assert.Equal(t, expectedUpdate, result,
 		"Unexpected version update for refactor update.")
 }
+
+func Test_GetVersionUpdate_BreakingChangePrefixShouldChangeMayor(t *testing.T) {
+	t.Parallel()
+
+	commitMessage := "BREAKING CHANGE: improve code"
+	expectedUpdate := core.MAJOR
+	result := core.GetVersionUpdate(commitMessage)
+	assert.Equal(t, expectedUpdate, result,
+		"Unexpected version update for refactor update.")
+}

@@ -9,7 +9,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "0.1.0" $output
+  assert_equal $output "0.1.0"
 }
 
 @test "New repository one tag one commit" {
@@ -17,7 +17,7 @@ load 'common.sh'
   update_repository && tag_repository "v1.0.0"
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "1.0.0" $output
+  assert_equal $output "1.0.0"
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged update" {
@@ -28,7 +28,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "1.3.0" $output
+  assert_equal $output "1.3.0"
 }
 
 @test "Repository with tags and multiple tags updates and multiple non tagged" {
@@ -41,7 +41,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "1.3.0" $output
+  assert_equal $output "1.3.0"
 }
 
 @test "Repository with one tag at the bottom and multiple non tagged commits" {
@@ -53,7 +53,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "0.2.0" $output
+  assert_equal $output "0.2.0"
 }
 
 @test "Repository with nonsemantic tags and multiple tags updates and multiple non tagged" {
@@ -64,7 +64,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "0.1.0" $output
+  assert_equal $output "0.1.0"
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged update updating patch" {
@@ -75,7 +75,7 @@ load 'common.sh'
   update_repository "fix"
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "1.2.1" $output
+  assert_equal $output "1.2.1"
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged breaking change" {
@@ -86,5 +86,16 @@ load 'common.sh'
   update_repository "feat!"
   run $BINARY_PATH calculate --path .tmp/repository
   assert_success
-  assert_equal "2.0.0" $output
+  assert_equal $output "2.0.0"
+}
+
+@test "Repository with tags and multiple tagged updates and one non tagged and BREAKING CHANGE: prefix" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository && tag_repository "v1.1.0"
+  update_repository && tag_repository "v1.2.0"
+  update_repository "BREAKING CHANGE"
+  run $BINARY_PATH calculate --path .tmp/repository
+  assert_success
+  assert_equal $output "2.0.0"
 }
