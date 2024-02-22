@@ -29,7 +29,6 @@ jobs:
       - name: Init build
         run: |
           export BIN_NAME=$(basename `pwd`)
-          echo "TAG_VERSION=$TAG_VERSION" >> "$GITHUB_ENV"
           echo "BIN_NAME=$BIN_NAME" >> "$GITHUB_ENV"
           make init
       - name: Build
