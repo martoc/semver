@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/martoc/semver/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +29,10 @@ var versionCmd = &cobra.Command{
 			Os:      Os,
 			Arch:    Arch,
 		}
-		jsonBytes, _ := json.Marshal(jsonData) //nolint:errchkjson
+		jsonBytes, err := json.Marshal(jsonData)
+		if err != nil {
+			logger.GetInstance().Println("Error marshaling version data:", err)
+		}
 		fmt.Fprintln(os.Stdout, string(jsonBytes))
 	},
 }
