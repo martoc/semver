@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	calculateCmd.Flags().StringP("path", "p", ".", "Path to the git repository")
+	calculateCmd.Flags().StringP("path", "p", ".", "Path to a git repository")
 }
 
 var calculateCmd = &cobra.Command{
