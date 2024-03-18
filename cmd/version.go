@@ -11,8 +11,8 @@ import (
 
 var (
 	CLIVersion string
-	Os         string //nolint:varnamelen
-	Arch       string
+	CLIOs      string
+	CLIArch    string
 )
 
 var versionCmd = &cobra.Command{
@@ -26,8 +26,8 @@ var versionCmd = &cobra.Command{
 			Arch    string `json:"arch"`
 		}{
 			Version: CLIVersion,
-			Os:      Os,
-			Arch:    Arch,
+			Os:      CLIOs,
+			Arch:    CLIArch,
 		}
 		jsonBytes, err := json.Marshal(jsonData)
 		if err != nil {

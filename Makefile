@@ -38,8 +38,8 @@ build: clean check lint test ## Cross platform build the binary
 		for GOARCH in arm64 amd64; do \
 			GOOS=$$GOOS GOARCH=$$GOARCH CGO_ENABLED=0 go build -ldflags " \
 					-X github.com/martoc/$(BIN_NAME)/cmd.CLIVersion=$(BIN_VERSION) \
-					-X github.com/martoc/$(BIN_NAME)/cmd.Os=$$GOOS \
-					-X github.com/martoc/$(BIN_NAME)/cmd.Arch=$$GOARCH \
+					-X github.com/martoc/$(BIN_NAME)/cmd.CLIOs=$$GOOS \
+					-X github.com/martoc/$(BIN_NAME)/cmd.CLIArch=$$GOARCH \
 					" \
 					-o $(TARGET)/builds/$(BIN_NAME)-$$GOOS-$$GOARCH main.go ; \
 			chmod 755 $(TARGET)/builds/$(BIN_NAME)-$$GOOS-$$GOARCH ; \
