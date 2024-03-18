@@ -6,7 +6,7 @@ if [ -z "$GITHUB_SHA" ]; then
   export GITHUB_SHA=b65a1568cfb7cbe02a48b92859a06be5e18f0d23
 fi
 
-BINARY_PATH="./target/semver"
+BINARY_PATH="./target/builds/semver-$(go env GOOS)-$(go env GOARCH)"
 
 echo "TAG_VERSION=$TAG_VERSION"
 echo "BINARY_PATH=$BINARY_PATH"
