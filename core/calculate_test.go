@@ -32,14 +32,19 @@ func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldNotBumpVersion(
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v2", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0.2", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.0.2", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "2.0.2", FloatingVersionMajor: "2", FloatingVersionMinor: "2.0"}, result)
 	assert.Nil(t, err)
 }
 
@@ -67,14 +72,19 @@ func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldIncreaseMayor(t
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v3", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v3.0", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v3.0.0", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "3.0.0", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "3.0.0", FloatingVersionMajor: "3", FloatingVersionMinor: "3.0"}, result)
 	assert.Nil(t, err)
 }
 
@@ -102,14 +112,19 @@ func TestCalculateCommandImpl_ShouldIncreaseMinor(t *testing.T) {
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v2", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.1", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.1.0", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.1.0", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "2.1.0", FloatingVersionMajor: "2", FloatingVersionMinor: "2.1"}, result)
 	assert.Nil(t, err)
 }
 
@@ -137,14 +152,19 @@ func TestCalculateCommandImpl_ShouldIncreasePatch(t *testing.T) {
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v2", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0.3", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.0.3", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "2.0.3", FloatingVersionMajor: "2", FloatingVersionMinor: "2.0"}, result)
 	assert.Nil(t, err)
 }
 
@@ -172,14 +192,19 @@ func TestCalculateCommandImpl_ShouldIncreasePatchIfByDefault(t *testing.T) {
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v2", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.0.3", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.0.3", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "2.0.3", FloatingVersionMajor: "2", FloatingVersionMinor: "2.0"}, result)
 	assert.Nil(t, err)
 }
 
@@ -207,14 +232,19 @@ func TestCalculateCommandImpl_ShouldReturnNextVersion(t *testing.T) {
 		},
 	}, nil)
 
+	mockScm.EXPECT().Tag("v2", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.1", gomock.Any(), true).Return(nil).Times(1)
+	mockScm.EXPECT().Tag("v2.1.0", gomock.Any(), false).Return(nil).Times(1)
+	mockScm.EXPECT().Push().Return(nil).Times(1)
+
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, err := calculateCommand.Execute()
 
 	// Assert the result
-	assert.Equal(t, "2.1.0", result)
+	assert.Equal(t, core.CalculateOutput{NextVersion: "2.1.0", FloatingVersionMajor: "2", FloatingVersionMinor: "2.1"}, result)
 	assert.Nil(t, err)
 }
 
@@ -231,7 +261,7 @@ func TestCalculateCommandImpl_ShouldReturnError(t *testing.T) {
 	mockScm.EXPECT().GetCommitLog().Return(nil, errExpectedFromTest).Times(1)
 
 	// Create CalculateCommandImpl with the mock Scm
-	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm}
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true}
 
 	// Call Execute method
 	result, resultError := calculateCommand.Execute()

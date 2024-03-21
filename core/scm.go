@@ -5,38 +5,48 @@ import (
 
 	"github.com/blang/semver/v4"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/storer"
 	"github.com/martoc/semver/logger"
 )
 
-type CommitLog struct {
-	Hash       string
-	Tags       []*semver.Version
-	Message    string
-	Date       time.Time
-	Author     string
-	Head       bool
-	BranchName string
-}
-
 //go:generate ${GOPATH}/bin/mockgen -destination=./commit_iter_mock.go -package=core github.com/go-git/go-git/v5/plumbing/object CommitIter
 //go:generate ${GOPATH}/bin/mockgen -destination=./reference_iter_mock.go -package=core github.com/go-git/go-git/v5/plumbing/storer ReferenceIter
 //go:generate ${GOPATH}/bin/mockgen -source=scm.go -destination=./scm_mock.go -package=core
 
-type Scm interface {
-	GetCommitLog() ([]*CommitLog, error)
+// CommitLog represents a commit in the Git repository.
+type CommitLog struct {
+	Hash       string            // The commit hash.
+	Tags       []*semver.Version // The tags associated with the commit.
+	Message    string            // The commit message.
+	Date       time.Time         // The commit date.
+	Author     string            // The author of the commit.
+	Head       bool              // Indicates if the commit is the HEAD commit.
+	BranchName string            // The name of the branch the commit belongs to.
 }
 
+// Scm is an interface that defines the methods for interacting with a source control management system.
+type Scm interface {
+	GetCommitLog() ([]*CommitLog, error) // GetCommitLog retrieves the commit history of the Git repository.
+	Tag(name, hash string, floating bool) error
+	Push() error
+}
+
+// GitRepo is an interface that defines the methods for interacting with a Git repository.
 type GitRepo interface {
 	PlainOpen(string) error
 	Head() (*plumbing.Reference, error)
 	Log(*git.LogOptions) (object.CommitIter, error)
 	Tags() (storer.ReferenceIter, error)
 	CommitObject(plumbing.Hash) (*object.Commit, error)
+	CreateTag(name string, hash plumbing.Hash, opts *git.CreateTagOptions) (*plumbing.Reference, error)
+	DeleteTag(name string) error
+	Push(opts *git.PushOptions) error
 }
 
+// GitRepoImpl is an implementation of the GitRepo interface.
 type GitRepoImpl struct {
 	repo *git.Repository
 }
@@ -77,32 +87,55 @@ func (g *GitRepoImpl) CommitObject(hash plumbing.Hash) (*object.Commit, error) {
 	return g.repo.CommitObject(hash)
 }
 
+// CreateTag creates a new tag with the given name and hash in the Git repository.
+// It returns a reference to the newly created tag and any error encountered.
+func (g *GitRepoImpl) CreateTag(name string, hash plumbing.Hash, opts *git.CreateTagOptions) (*plumbing.Reference, error) {
+	return g.repo.CreateTag(name, hash, opts)
+}
+
+// DeleteTag deletes the tag with the given name from the Git repository.
+// It returns an error if the tag deletion fails.
+func (g *GitRepoImpl) DeleteTag(name string) error {
+	return g.repo.DeleteTag(name)
+}
+
+// Push pushes the changes to the remote repository.
+func (g *GitRepoImpl) Push(opts *git.PushOptions) error {
+	return g.repo.Push(opts)
+}
+
+// ScmGit is an implementation of the Scm interface for Git repositories.
 type ScmGit struct {
 	Path string
 	Repo GitRepo
 }
 
+// ScmGitBuilder is a builder for creating ScmGit instances.
 type ScmGitBuilder struct {
 	Path string
 	Repo GitRepo
 }
 
+// NewScmGitBuilder creates a new ScmGitBuilder instance.
 func NewScmGitBuilder() *ScmGitBuilder {
 	return &ScmGitBuilder{}
 }
 
+// SetPath sets the path of the Git repository.
 func (b *ScmGitBuilder) SetPath(path string) *ScmGitBuilder {
 	b.Path = path
 
 	return b
 }
 
+// SetRepo sets the Git repository implementation.
 func (b *ScmGitBuilder) SetRepo(repo GitRepo) *ScmGitBuilder {
 	b.Repo = repo
 
 	return b
 }
 
+// Build creates a new Scm instance based on the builder configuration.
 func (b *ScmGitBuilder) Build() Scm {
 	if b.Repo == nil {
 		b.Repo = &GitRepoImpl{}
@@ -196,9 +229,9 @@ func (s *ScmGit) getTags(commit *object.Commit, tags storer.ReferenceIter) []*se
 			version, errSemver := semver.Make(s.cleanVersion(tag.Name().Short()))
 			if errSemver != nil {
 				logger.GetInstance().Error(tag.Name().Short(), ": ", errSemver)
+			} else {
+				tagNames = append(tagNames, &version)
 			}
-
-			tagNames = append(tagNames, &version)
 		}
 	}
 
@@ -213,4 +246,32 @@ func (s *ScmGit) cleanVersion(tagName string) string {
 	}
 
 	return tagName
+}
+
+// Tag creates a new tag with the given name and hash in the Git repository.
+// It returns an error if the tag creation fails.
+func (s *ScmGit) Tag(name, hash string, floating bool) error {
+	commitHash := plumbing.NewHash(hash)
+
+	if floating {
+		err := s.Repo.DeleteTag(name)
+		if err != nil {
+			logger.GetInstance().Println(err)
+		}
+	}
+
+	_, err := s.Repo.CreateTag(name, commitHash, nil)
+
+	return err
+}
+
+// Push pushes the changes to the remote repository.
+// It returns an error if the push operation fails.
+func (s *ScmGit) Push() error {
+	return s.Repo.Push(&git.PushOptions{
+		RemoteName: "origin",
+		RefSpecs: []config.RefSpec{
+			config.RefSpec("refs/tags/*:refs/tags/*"), // Push tags to the remote repository
+		},
+	})
 }

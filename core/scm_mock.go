@@ -52,6 +52,34 @@ func (mr *MockScmMockRecorder) GetCommitLog() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCommitLog", reflect.TypeOf((*MockScm)(nil).GetCommitLog))
 }
 
+// Push mocks base method.
+func (m *MockScm) Push() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Push")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Push indicates an expected call of Push.
+func (mr *MockScmMockRecorder) Push() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockScm)(nil).Push))
+}
+
+// Tag mocks base method.
+func (m *MockScm) Tag(name, hash string, floating bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Tag", name, hash, floating)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Tag indicates an expected call of Tag.
+func (mr *MockScmMockRecorder) Tag(name, hash, floating interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tag", reflect.TypeOf((*MockScm)(nil).Tag), name, hash, floating)
+}
+
 // MockGitRepo is a mock of GitRepo interface.
 type MockGitRepo struct {
 	ctrl     *gomock.Controller
@@ -88,6 +116,35 @@ func (m *MockGitRepo) CommitObject(arg0 plumbing.Hash) (*object.Commit, error) {
 func (mr *MockGitRepoMockRecorder) CommitObject(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitObject", reflect.TypeOf((*MockGitRepo)(nil).CommitObject), arg0)
+}
+
+// CreateTag mocks base method.
+func (m *MockGitRepo) CreateTag(name string, hash plumbing.Hash, opts *v5.CreateTagOptions) (*plumbing.Reference, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTag", name, hash, opts)
+	ret0, _ := ret[0].(*plumbing.Reference)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateTag indicates an expected call of CreateTag.
+func (mr *MockGitRepoMockRecorder) CreateTag(name, hash, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTag", reflect.TypeOf((*MockGitRepo)(nil).CreateTag), name, hash, opts)
+}
+
+// DeleteTag mocks base method.
+func (m *MockGitRepo) DeleteTag(name string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTag", name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTag indicates an expected call of DeleteTag.
+func (mr *MockGitRepoMockRecorder) DeleteTag(name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTag", reflect.TypeOf((*MockGitRepo)(nil).DeleteTag), name)
 }
 
 // Head mocks base method.
@@ -132,6 +189,20 @@ func (m *MockGitRepo) PlainOpen(arg0 string) error {
 func (mr *MockGitRepoMockRecorder) PlainOpen(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PlainOpen", reflect.TypeOf((*MockGitRepo)(nil).PlainOpen), arg0)
+}
+
+// Push mocks base method.
+func (m *MockGitRepo) Push(opts *v5.PushOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Push", opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Push indicates an expected call of Push.
+func (mr *MockGitRepoMockRecorder) Push(opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockGitRepo)(nil).Push), opts)
 }
 
 // Tags mocks base method.

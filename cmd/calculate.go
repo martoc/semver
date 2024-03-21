@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -11,6 +12,9 @@ import (
 
 func init() {
 	calculateCmd.Flags().StringP("path", "p", ".", "Path to a git repository")
+	calculateCmd.Flags().BoolP("push", "u", false, "Push the new tag to the remote repository")
+	calculateCmd.Flags().BoolP("add-floating-tags", "f", false,
+		"Add the floating tags to the new tag for example v1.2.3 will also add v1 and v1.2")
 }
 
 var calculateCmd = &cobra.Command{
@@ -20,11 +24,18 @@ var calculateCmd = &cobra.Command{
 		using semantic versioning and conventional commits (https://www.conventionalcommits.org/en/v1.0.0-beta.4/)`,
 	Run: func(cmd *cobra.Command, _ []string) {
 		path, _ := cmd.Flags().GetString("path")
-		result, err := core.NewCalculateCommandBuilder().SetPath(path).Build().Execute()
+		push, _ := cmd.Flags().GetBool("push")
+		addFloatingTags, _ := cmd.Flags().GetBool("add-floating-tags")
+		result, err := core.NewCalculateCommandBuilder().SetPath(path).SetAddFloatingTags(addFloatingTags).SetPush(push).Build().Execute()
 		if err != nil {
 			logger.GetInstance().Error(err)
 			os.Exit(1)
 		}
-		fmt.Fprintln(os.Stdout, result)
+		jsonResult, err := json.Marshal(result) // Convert result to JSON
+		if err != nil {
+			logger.GetInstance().Error(err)
+			os.Exit(1)
+		}
+		fmt.Fprintln(os.Stdout, string(jsonResult)) // Print JSON result
 	},
 }

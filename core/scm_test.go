@@ -215,16 +215,10 @@ func TestScmGit_GetCommitLogShouldNotFailIfTagsOrSemver(t *testing.T) {
 	expectedCommitLog := &core.CommitLog{
 		Hash:    "e574dfaecd0a2a1d666c19f813c9a8f573fc121b",
 		Message: "Commit message",
-		Tags: []*semver.Version{
-			{
-				Major: 0,
-				Minor: 0,
-				Patch: 0,
-			},
-		},
-		Head:   true,
-		Author: "Sarah Connor",
-		Date:   commit.Author.When,
+		Tags:    []*semver.Version{},
+		Head:    true,
+		Author:  "Sarah Connor",
+		Date:    commit.Author.When,
 	}
 
 	assert.Equal(t, expectedCommitLog, commitLogs[0])
@@ -243,4 +237,112 @@ func TestScmGitBuilder_SetRepo(t *testing.T) {
 	result := builder.SetRepo(mockRepo)
 
 	assert.Equal(t, mockRepo, result.Repo)
+}
+
+func TestScmGit_TagShouldNotFailIfFloatingTagAlreadyExist(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock GitRepo
+	mockRepo := core.NewMockGitRepo(ctrl)
+
+	// Set up expectations on the mock Repo
+	mockRepo.EXPECT().CreateTag("v1", plumbing.NewHash("e574dfaecd0a2a1d666c19f813c9a8f573fc121b"), nil).Return(nil, nil)
+	mockRepo.EXPECT().CreateTag("v1", plumbing.NewHash("d56f2faecd0a2a1d666c19f813c9a8f573fc121b"), nil).Return(nil, nil)
+	mockRepo.EXPECT().DeleteTag("v1").Return(nil).Times(2)
+
+	// Create the ScmGit instance with the mock Repo
+	scm := core.ScmGit{
+		Path: "/path/to/repo",
+		Repo: mockRepo,
+	}
+
+	// Call the method under test
+	err := scm.Tag("v1", "e574dfaecd0a2a1d666c19f813c9a8f573fc121b", true)
+
+	// Assert the results
+	assert.NoError(t, err)
+
+	err = scm.Tag("v1", "d56f2faecd0a2a1d666c19f813c9a8f573fc121b", true)
+
+	// Assert the results
+	assert.NoError(t, err)
+}
+
+func TestScmGit_TagShouldNotUseFloatingTag(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock GitRepo
+	mockRepo := core.NewMockGitRepo(ctrl)
+
+	// Set up expectations on the mock Repo
+	mockRepo.EXPECT().CreateTag("v1", plumbing.NewHash("e574dfaecd0a2a1d666c19f813c9a8f573fc121b"), nil).Return(nil, nil)
+
+	// Create the ScmGit instance with the mock Repo
+	scm := core.ScmGit{
+		Path: "/path/to/repo",
+		Repo: mockRepo,
+	}
+
+	// Call the method under test
+	err := scm.Tag("v1", "e574dfaecd0a2a1d666c19f813c9a8f573fc121b", false)
+
+	// Assert the results
+	assert.NoError(t, err)
+}
+
+func TestScmGit_TagShouldNotFailIfFloatingTagDeletionFails(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock GitRepo
+	mockRepo := core.NewMockGitRepo(ctrl)
+
+	// Set up expectations on the mock Repo
+	mockRepo.EXPECT().CreateTag("v1", plumbing.NewHash("e574dfaecd0a2a1d666c19f813c9a8f573fc121b"), nil).Return(nil, nil)
+	mockRepo.EXPECT().DeleteTag("v1").Return(errExpectedError)
+
+	// Create the ScmGit instance with the mock Repo
+	scm := core.ScmGit{
+		Path: "/path/to/repo",
+		Repo: mockRepo,
+	}
+
+	// Call the method under test
+	err := scm.Tag("v1", "e574dfaecd0a2a1d666c19f813c9a8f573fc121b", true)
+
+	// Assert the results
+	assert.NoError(t, err)
+}
+
+func TestScmGit_Push(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock GitRepo
+	mockRepo := core.NewMockGitRepo(ctrl)
+
+	// Set up expectations on the mock Repo
+	mockRepo.EXPECT().Push(gomock.Any()).Return(nil)
+
+	// Create the ScmGit instance with the mock Repo
+	scm := core.ScmGit{
+		Path: "/path/to/repo",
+		Repo: mockRepo,
+	}
+
+	// Call the method under test
+	err := scm.Push()
+
+	// Assert the results
+	assert.NoError(t, err)
 }
