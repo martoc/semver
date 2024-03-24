@@ -42,9 +42,9 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Build Container
-        uses: martoc/action-container-build@main
+        uses: martoc/action-container-build@v0
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - name: Release on GitHub
-        uses: martoc/action-release@main
+        uses: martoc/action-release@v0
