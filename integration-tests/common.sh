@@ -12,6 +12,8 @@ echo "TAG_VERSION=$TAG_VERSION"
 echo "BINARY_PATH=$BINARY_PATH"
 echo "GITHUB_SHA=$GITHUB_SHA"
 
+git config --global init.defaultBranch main
+
 create_repository() {
   BASE=$PWD
   rm -rf .tmp/repository
