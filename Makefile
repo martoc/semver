@@ -61,7 +61,7 @@ tidy: ## Run tidy files
 	@echo "==> Running tidy..."
 	go mod tidy
 	go fmt $(PACKAGES)
-	gofumpt -d .
+	$(GOPATH)/bin/gofumpt -d .
 
 .PHONY: generate
 generate: ## Run source code generation
