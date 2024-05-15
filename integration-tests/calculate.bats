@@ -1,7 +1,7 @@
 #!/usr/bin/env ./bats/bin/bats
 
-load 'test_helper/bats-support/load'
-load 'test_helper/bats-assert/load'
+load '/usr/lib/bats/bats-support/load'
+load '/usr/lib/bats/bats-assert/load'
 load 'common.sh'
 
 @test "New repository no tags one commit" {

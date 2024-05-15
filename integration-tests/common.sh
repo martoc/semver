@@ -6,11 +6,18 @@ if [ -z "$GITHUB_SHA" ]; then
   export GITHUB_SHA=b65a1568cfb7cbe02a48b92859a06be5e18f0d23
 fi
 
-BINARY_PATH="./target/builds/semver-$(go env GOOS)-$(go env GOARCH)"
+if [ -z "$INTEGRATION_TEST_ROOT" ]; then
+  export INTEGRATION_TEST_ROOT=.
+fi
+
+BINARY_PATH="$INTEGRATION_TEST_ROOT/target/builds/semver-$GOOS-$GOARCH"
 
 echo "TAG_VERSION=$TAG_VERSION"
 echo "BINARY_PATH=$BINARY_PATH"
 echo "GITHUB_SHA=$GITHUB_SHA"
+
+apk add jq
+apk add git
 
 git config --global init.defaultBranch main
 
