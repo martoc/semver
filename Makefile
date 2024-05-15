@@ -22,7 +22,6 @@ clean: ## Clean the binary
 init: install ## Installing binaries
 	@echo "==> Initialising..."
 	go version
-	git submodule update --init --recursive
 
 .PHONY: test
 test: ## Run tests
