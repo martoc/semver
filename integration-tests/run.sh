@@ -10,5 +10,7 @@ for file in $test_files; do
     -e INTEGRATION_TEST_ROOT=/workspace \
     -e GOOS=linux \
     -e GOARCH=$(go env GOARCH) \
+    -e VERSION=$TAG_VERSION \
+    -e GITHUB_SHA=$GITHUB_SHA \
     bats/bats:1.11.0 /workspace/integration-tests/$(basename "$file")
 done
