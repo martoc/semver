@@ -9,7 +9,7 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal "2" $(echo $output | jq -r .floating_version_major)
+  assert_equal "0" $(echo $output | jq -r .floating_version_major)
   assert_equal "0.1" $(echo $output | jq -r .floating_version_minor)
   assert_equal "0.1.0" $(echo $output | jq -r .next_version)
 }
