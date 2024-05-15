@@ -9,9 +9,9 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "0.1.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "0"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "0.1"
+  assert_equal "0" $(echo $output | jq -r .floating_version_major)
+  assert_equal "0.1" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "0.1.0" $(echo $output | jq -r .next_version)
 }
 
 @test "New repository one tag one commit" {
@@ -19,9 +19,9 @@ load 'common.sh'
   update_repository && tag_repository "v1.0.0"
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.0.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.0"
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.0.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged update" {
@@ -32,9 +32,9 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.3.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.3"
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.3" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.3.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with tags and multiple tags updates and multiple non tagged" {
@@ -47,9 +47,9 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.3.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.3"
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.3" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.3.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with one tag at the bottom and multiple non tagged commits" {
@@ -61,9 +61,9 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "0.2.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "0"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "0.2"
+  assert_equal "0" $(echo $output | jq -r .floating_version_major)
+  assert_equal "0.2" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "0.2.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with nonsemantic tags and multiple tags updates and multiple non tagged" {
@@ -74,9 +74,9 @@ load 'common.sh'
   update_repository
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "0.1.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "0"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "0.1"
+  assert_equal "0" $(echo $output | jq -r .floating_version_major)
+  assert_equal "0.1" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "0.1.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged update updating patch" {
@@ -87,9 +87,9 @@ load 'common.sh'
   update_repository "fix"
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.2.1"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.2"
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.2" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.2.1" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged breaking change" {
@@ -100,9 +100,9 @@ load 'common.sh'
   update_repository "feat!"
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "2.0.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "2"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "2.0"
+  assert_equal "2" $(echo $output | jq -r .floating_version_major)
+  assert_equal "2.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "2.0.0" $(echo $output | jq -r .next_version)
 }
 
 @test "Repository with tags and multiple tagged updates and one non tagged and BREAKING CHANGE: prefix" {
@@ -113,9 +113,9 @@ load 'common.sh'
   update_repository "BREAKING CHANGE"
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "2.0.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "2"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "2.0"
+  assert_equal "2" $(echo $output | jq -r .floating_version_major)
+  assert_equal "2.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "2.0.0" $(echo $output | jq -r .next_version)
 }
 
 @test "New repository one tag one commit move floating tag to new commit" {
@@ -123,13 +123,13 @@ load 'common.sh'
   update_repository && tag_repository "v1.0.0"
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.0.0"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.0"
+  assert_equal "1.0.0" $(echo $output | jq -r .next_version)
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.0" $(echo $output | jq -r .floating_version_minor)
   update_repository fix
   run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
   assert_success
-  assert_equal $(echo $output | jq -r .next_version) "1.0.1"
-  assert_equal $(echo $output | jq -r .floating_version_major) "1"
-  assert_equal $(echo $output | jq -r .floating_version_minor) "1.0"
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.0.1" $(echo $output | jq -r .next_version)
 }
