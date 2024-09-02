@@ -10,4 +10,4 @@ In order for us to best respond to your report, please include any of the follow
 * Any relevant tools, including versions used
 * Tool output
 
-For additional information about HashiCorp security, please see https://www.nebulaobjects.com/security.
+For additional information about HashiCorp security, please see https://martoc.github.io/security.
