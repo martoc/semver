@@ -36,13 +36,14 @@ create_repository() {
 update_repository() {
   BASE=$PWD
   CHANGE_TYPE=$1
+  PREFIX=$2
   if [ "$1" = "" ]; then
     CHANGE_TYPE="feat"
   fi
   cd .tmp/repository
   date >> file.txt
   git add file.txt
-  git commit -m "$CHANGE_TYPE: Update file.txt"
+  git commit -m "${PREFIX}${CHANGE_TYPE}: Update file.txt"
   cd $BASE
 }
 

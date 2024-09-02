@@ -133,3 +133,36 @@ load 'common.sh'
   assert_equal "1.0" $(echo $output | jq -r .floating_version_minor)
   assert_equal "1.0.1" $(echo $output | jq -r .next_version)
 }
+
+@test "Azure DevOps merge commit for a patch" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository "fix" "Merged PR 12345: "
+  run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
+  assert_success
+  assert_equal "1" $(echo $output | jq -r .floating_version_major)
+  assert_equal "1.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "1.0.1" $(echo $output | jq -r .next_version)
+}
+
+@test "Azure DevOps merge commit for a breaking change" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository "BREAKING CHANGE" "Merged PR 12345: "
+  run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
+  assert_success
+  assert_equal "2" $(echo $output | jq -r .floating_version_major)
+  assert_equal "2.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "2.0.0" $(echo $output | jq -r .next_version)
+}
+
+@test "Azure DevOps merge commit for a breaking change with factorial" {
+  create_repository
+  update_repository && tag_repository "v1.0.0"
+  update_repository "refactor!" "Merged PR 12345: "
+  run $BINARY_PATH calculate --path .tmp/repository --add-floating-tags
+  assert_success
+  assert_equal "2" $(echo $output | jq -r .floating_version_major)
+  assert_equal "2.0" $(echo $output | jq -r .floating_version_minor)
+  assert_equal "2.0.0" $(echo $output | jq -r .next_version)
+}
