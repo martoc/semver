@@ -7,8 +7,6 @@ linters-settings:
   funlen:
     lines: 100
     statements: 50
-  gci:
-    local-prefixes: github.com/golangci/golangci-lint
   goconst:
     min-len: 2
     min-occurrences: 2
@@ -27,22 +25,21 @@ linters-settings:
       - wrapperFunc
   gocyclo:
     min-complexity: 15
-  golint:
-    min-confidence: 0
-  gomnd:
-    settings:
-      mnd:
-        # don't include the "operation" and "assign"
-        checks: ["argument","case","condition","return"]
+  mnd:
+    checks:
+      - argument
+      - case
+      - condition
+      - return
   govet:
-    check-shadowing: true
-    fieldalignment: true
+    enable-all: true
+    disable:
+      - fieldalignment
   lll:
     line-length: 140
   misspell:
     locale: US
   nolintlint:
-    allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
     allow-unused: false # report any unused nolint directives
     require-explanation: false # don't require an explanation for nolint directives
     require-specific: false # don't require nolint directives to be specific about which linter is being skipped
@@ -58,20 +55,15 @@ linters:
     - bodyclose
     - containedctx
     - contextcheck
-    # - cyclop
     - decorder
-    # - depguard
     - dogsled
-    # - dupl
     - dupword
     - durationcheck
     - errcheck
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
-    # - exhaustruct
     - exportloopref
     - forbidigo
     - forcetypeassert
@@ -79,20 +71,17 @@ linters:
     - gci
     - ginkgolinter
     - gocheckcompilerdirectives
-    # - gochecknoglobals
-    # - gochecknoinits
-    # - gocognit
     - goconst
     - gocritic
     - gocyclo
     - godot
     - godox
-    - goerr113
+    - err113
     - gofmt
     - gofumpt
     - goheader
     - goimports
-    - gomnd
+    - mnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname
@@ -103,7 +92,6 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
-    # - ireturn
     - lll
     - loggercheck
     - maintidx
@@ -111,7 +99,6 @@ linters:
     - misspell
     - musttag
     - nakedret
-    # - nestif
     - nilerr
     - nilnil
     - nlreturn
@@ -129,7 +116,6 @@ linters:
     - sqlclosecheck
     - staticcheck
     - stylecheck
-    # - tagliatelle
     - tenv
     - testableexamples
     - testpackage
@@ -143,7 +129,6 @@ linters:
     - varnamelen
     - wastedassign
     - whitespace
-    # - wrapcheck
     - wsl
 
 service:

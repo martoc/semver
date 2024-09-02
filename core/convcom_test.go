@@ -106,3 +106,33 @@ func Test_GetVersionUpdate_BreakingChangePrefixShouldChangeMayor(t *testing.T) {
 	assert.Equal(t, expectedUpdate, result,
 		"Unexpected version update for refactor update.")
 }
+
+func Test_GetVersionUpdate_AzureDevOpsPrefixFeatPrefixShouldChangeMinor(t *testing.T) {
+	t.Parallel()
+
+	commitMessage := "Merged PR 12345: feat: improve code"
+	expectedUpdate := core.MINOR
+	result := core.GetVersionUpdate(commitMessage)
+	assert.Equal(t, expectedUpdate, result,
+		"Unexpected version update for feat update.")
+}
+
+func Test_GetVersionUpdate_AzureDevOpsPrefixPatchPrefixShouldChangePatch(t *testing.T) {
+	t.Parallel()
+
+	commitMessage := "Merged PR 12345: fix: improve code"
+	expectedUpdate := core.PATCH
+	result := core.GetVersionUpdate(commitMessage)
+	assert.Equal(t, expectedUpdate, result,
+		"Unexpected version update for patch update.")
+}
+
+func Test_GetVersionUpdate_AzureDevOpsPrefixBreakingChangePrefixShouldChangeMayor(t *testing.T) {
+	t.Parallel()
+
+	commitMessage := "Merged PR 12345: BREAKING CHANGE: improve code"
+	expectedUpdate := core.MAJOR
+	result := core.GetVersionUpdate(commitMessage)
+	assert.Equal(t, expectedUpdate, result,
+		"Unexpected version update for refactor update.")
+}
