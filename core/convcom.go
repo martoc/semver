@@ -11,6 +11,11 @@ const (
 	PATCH
 )
 
+const (
+	commitTypeGroup     = 2
+	breakingChangeGroup = 3
+)
+
 type SemanticVersionComponent int
 
 // GetVersionUpdate determines the version update type (MAJOR, MINOR, PATCH) based on the conventional commit message.
@@ -21,10 +26,10 @@ func GetVersionUpdate(commitMessage string) SemanticVersionComponent {
 	// Extract the commit type from the commit message
 	match := re.FindStringSubmatch(commitMessage)
 	if len(match) > 2 {
-		commitType := match[2]
+		commitType := match[commitTypeGroup]
 
 		// Check if the commit message contains "BREAKING CHANGE:" or has ! in the type
-		if strings.Contains(commitMessage, "BREAKING CHANGE") || (len(match) > 3 && match[3] == "!") {
+		if strings.Contains(commitMessage, "BREAKING CHANGE") || (len(match) > 3 && match[breakingChangeGroup] == "!") {
 			return MAJOR
 		}
 
