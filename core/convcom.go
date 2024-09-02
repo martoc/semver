@@ -12,8 +12,10 @@ const (
 )
 
 const (
-	commitTypeGroup     = 2
-	breakingChangeGroup = 3
+	commitTypeGroup                 = 2
+	breakingChangeGroup             = 3
+	lenghtOfMatch                   = 2
+	lenghtOfMatchWithBreakingChange = 3
 )
 
 type SemanticVersionComponent int
@@ -25,11 +27,12 @@ func GetVersionUpdate(commitMessage string) SemanticVersionComponent {
 
 	// Extract the commit type from the commit message
 	match := re.FindStringSubmatch(commitMessage)
-	if len(match) > 2 {
+	if len(match) > lenghtOfMatch {
 		commitType := match[commitTypeGroup]
 
 		// Check if the commit message contains "BREAKING CHANGE:" or has ! in the type
-		if strings.Contains(commitMessage, "BREAKING CHANGE") || (len(match) > 3 && match[breakingChangeGroup] == "!") {
+		if strings.Contains(commitMessage, "BREAKING CHANGE") ||
+			(len(match) > lenghtOfMatchWithBreakingChange && match[breakingChangeGroup] == "!") {
 			return MAJOR
 		}
 
