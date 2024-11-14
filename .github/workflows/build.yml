@@ -36,7 +36,7 @@ jobs:
       - name: Run Integration Tests
         run: make run-integration-tests || { cat semver.log & exit 1; }
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: target/coverage.out
         env:
