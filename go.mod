@@ -10,10 +10,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 )
 
-require (
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
-)
+require golang.org/x/sync v0.10.0 // indirect
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
