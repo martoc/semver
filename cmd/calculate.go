@@ -15,6 +15,7 @@ func init() {
 	calculateCmd.Flags().BoolP("push", "u", false, "Push the new tag to the remote repository")
 	calculateCmd.Flags().BoolP("add-floating-tags", "f", false,
 		"Add the floating tags to the new tag for example v1.2.3 will also add v1 and v1.2")
+	calculateCmd.Flags().BoolP("disable-tagging", "d", false, "Disable tagging")
 }
 
 var calculateCmd = &cobra.Command{
@@ -26,7 +27,14 @@ var calculateCmd = &cobra.Command{
 		path, _ := cmd.Flags().GetString("path")
 		push, _ := cmd.Flags().GetBool("push")
 		addFloatingTags, _ := cmd.Flags().GetBool("add-floating-tags")
-		result, err := core.NewCalculateCommandBuilder().SetPath(path).SetAddFloatingTags(addFloatingTags).SetPush(push).Build().Execute()
+		disableTagging, _ := cmd.Flags().GetBool("disable-tagging")
+		result, err := core.NewCalculateCommandBuilder().
+			SetPath(path).
+			SetAddFloatingTags(addFloatingTags).
+			SetPush(push).
+			SetDisableTagging(disableTagging).
+			Build().
+			Execute()
 		if err != nil {
 			logger.GetInstance().Error(err)
 			os.Exit(1)

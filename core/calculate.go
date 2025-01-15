@@ -1,3 +1,4 @@
+// Package core provides the core functionality for version calculation and tagging.
 package core
 
 import (
@@ -11,18 +12,20 @@ const (
 	versionPrefix = "v"
 )
 
+// CalculateOutput represents the output of the version calculation.
 type CalculateOutput struct {
 	NextVersion          string `json:"next_version"`
 	FloatingVersionMajor string `json:"floating_version_major"`
 	FloatingVersionMinor string `json:"floating_version_minor"`
 }
 
-// CalculateCommand is an interface for the CalculateCommandImpl.
+// CalculateCommandBuilder is a builder for creating CalculateCommand instances.
 type CalculateCommandBuilder struct {
 	Scm             Scm
 	Path            string
 	AddFloatingTags bool
 	Push            bool
+	DisableTagging  bool
 }
 
 // NewCalculateCommandBuilder creates a new instance of CalculateCommandBuilder.
@@ -66,6 +69,15 @@ func (b *CalculateCommandBuilder) SetPush(push bool) *CalculateCommandBuilder {
 	return b
 }
 
+// SetDisableTagging sets the DisableTagging field of the CalculateCommandBuilder.
+// It takes a boolean parameter 'disableTagging' and assigns it to the 'DisableTagging' field of the CalculateCommandBuilder.
+// It returns a pointer to the CalculateCommandBuilder for method chaining.
+func (b *CalculateCommandBuilder) SetDisableTagging(disableTagging bool) *CalculateCommandBuilder {
+	b.DisableTagging = disableTagging
+
+	return b
+}
+
 // Build returns a Command built from the CalculateCommandBuilder.
 // It creates a CalculateCommandImpl with the provided Scm.
 func (b *CalculateCommandBuilder) Build() Command {
@@ -87,6 +99,7 @@ type CalculateCommandImpl struct {
 	Scm             Scm
 	AddFloatingTags bool
 	Push            bool
+	DisableTagging  bool
 }
 
 // Execute executes the CalculateCommandImpl command and returns the next version tag string and any error encountered.
@@ -103,31 +116,37 @@ func (c *CalculateCommandImpl) Execute() (interface{}, error) {
 	if c.AddFloatingTags {
 		floatingVersionMajor := strconv.FormatInt(int64(nextTag.Major), 10)
 
-		err = c.Scm.Tag(versionPrefix+floatingVersionMajor, commitLogs[0].Hash, true) // vx
-		if err != nil {
-			logger.GetInstance().Println(err)
+		if !c.DisableTagging {
+			err = c.Scm.Tag(versionPrefix+floatingVersionMajor, commitLogs[0].Hash, true) // vx
+			if err != nil {
+				logger.GetInstance().Println(err)
+			}
 		}
 
 		output.FloatingVersionMajor = floatingVersionMajor
 
 		floatingVersionMinor := floatingVersionMajor + "." + strconv.FormatInt(int64(nextTag.Minor), 10)
 
-		err = c.Scm.Tag(versionPrefix+floatingVersionMinor, commitLogs[0].Hash, true) // vx.y
-		if err != nil {
-			logger.GetInstance().Println(err)
+		if !c.DisableTagging {
+			err = c.Scm.Tag(versionPrefix+floatingVersionMinor, commitLogs[0].Hash, true) // vx.y
+			if err != nil {
+				logger.GetInstance().Println(err)
+			}
 		}
 
 		output.FloatingVersionMinor = floatingVersionMinor
 	}
 
-	err = c.Scm.Tag(versionPrefix+nextTag.String(), commitLogs[0].Hash, false) // vx.y.z
-	if err != nil {
-		logger.GetInstance().Println(err)
+	if !c.DisableTagging {
+		err = c.Scm.Tag(versionPrefix+nextTag.String(), commitLogs[0].Hash, false) // vx.y.z
+		if err != nil {
+			logger.GetInstance().Println(err)
+		}
 	}
 
 	output.NextVersion = nextTag.String()
 
-	if c.Push {
+	if c.Push && !c.DisableTagging {
 		err = c.Scm.Push()
 		if err != nil {
 			logger.GetInstance().Println(err)
@@ -139,6 +158,8 @@ func (c *CalculateCommandImpl) Execute() (interface{}, error) {
 	return output, nil
 }
 
+// calculateTag calculates the next version tag based on the commit logs.
+// It takes a slice of CommitLog pointers and returns a pointer to the calculated semver.Version.
 func (c *CalculateCommandImpl) calculateTag(commitLogs []*CommitLog) *semver.Version {
 	nextTag, _ := semver.Make("0.0.0")
 
@@ -168,6 +189,8 @@ func (c *CalculateCommandImpl) calculateTag(commitLogs []*CommitLog) *semver.Ver
 	return &nextTag
 }
 
+// GetGreatestTag returns the greatest tag from a list of tags.
+// It takes a semver.Version and a slice of semver.Version pointers and returns the greatest semver.Version.
 func (c *CalculateCommandImpl) GetGreatestTag(nextTag semver.Version, tags []*semver.Version) semver.Version {
 	for _, tag := range tags {
 		if nextTag.LT(*tag) {

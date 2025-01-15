@@ -396,3 +396,43 @@ func TestCalculateCommandBuilder_BuildWithExistingScm(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, mockScm, command.(*core.CalculateCommandImpl).Scm) //nolint:forcetypeassert
 }
+
+func TestCalculateCommandImpl_ShouldReturnSameTaggedVersionShouldIncreaseMayorButSkipTaggingAndPush(t *testing.T) {
+	t.Parallel()
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	// Create a mock Scm
+	mockScm := core.NewMockScm(ctrl)
+
+	// Set up expectations for GetCommitLog method
+	mockScm.EXPECT().GetCommitLog().Return([]*core.CommitLog{
+		{
+			Tags:    []*semver.Version{},
+			Message: "feat!: add new feature",
+		},
+		{
+			Tags: []*semver.Version{
+				{Major: 1, Minor: 0, Patch: 0},
+				{Major: 2, Minor: 0, Patch: 2},
+				{Major: 2, Minor: 0, Patch: 1},
+			},
+		},
+	}, nil)
+
+	mockScm.EXPECT().Tag("v3", gomock.Any(), true).Return(nil).Times(0)
+	mockScm.EXPECT().Tag("v3.0", gomock.Any(), true).Return(nil).Times(0)
+	mockScm.EXPECT().Tag("v3.0.0", gomock.Any(), false).Return(nil).Times(0)
+	mockScm.EXPECT().Push().Return(nil).Times(0)
+
+	// Create CalculateCommandImpl with the mock Scm
+	calculateCommand := &core.CalculateCommandImpl{Scm: mockScm, AddFloatingTags: true, Push: true, DisableTagging: true}
+
+	// Call Execute method
+	result, err := calculateCommand.Execute()
+
+	// Assert the result
+	assert.Equal(t, core.CalculateOutput{NextVersion: "3.0.0", FloatingVersionMajor: "3", FloatingVersionMinor: "3.0"}, result)
+	assert.Nil(t, err)
+}
